@@ -1,0 +1,40 @@
+<simulation>
+   <output prefix='h2o-ice-cmd'>
+      <properties stride='1000' filename='out'>  [ step, time{picosecond}, conserved, temperature{kelvin}, kinetic_cv, potential, pressure_cv{megapascal}] </properties>
+      <checkpoint filename='restart' stride='20000' />
+      <trajectory filename='xc' stride='2000' format='xyz' cell_units='angstrom'> x_centroid{angstrom} </trajectory>
+      <trajectory filename='vc' stride='20' cell_units='angstrom'> v_centroid </trajectory>
+      <trajectory filename='for' stride='20000' format='xyz' cell_units='angstrom'> forces </trajectory>
+      <trajectory stride="20000" filename="pos" cell_units="angstrom">positions{angstrom}</trajectory>
+   </output>
+   <total_steps>200000</total_steps>
+   <prng><seed>32xxx45</seed></prng>
+   <ffsocket mode='unix' name='lammps'>
+       <latency>0.0001</latency>
+       <slots>8</slots>
+       <address>h2o-cmd-xxx</address>
+   </ffsocket>
+   <system>
+     <normal_modes mode='pa-cmd' units="inversecm"> [  14000 ] </normal_modes>
+     <initialize nbeads='48'>
+         <file mode='chk' > ../../pimd-checkpoints/h2o-ice-pimd.restart_xxx  </file>
+         <velocities mode="thermal" units='kelvin'> 200 </velocities>
+     </initialize>
+     <forces>
+         <force forcefield="lammps" /> 
+     </forces>
+     <motion mode='dynamics'>
+        <dynamics mode='nvt'>
+           <thermostat mode='pile_g'>
+              <tau units='femtosecond'>1000</tau>
+              <pile_lambda> 0.01 </pile_lambda>
+           </thermostat>
+           <timestep units='femtosecond'> 0.05</timestep>
+         </dynamics>
+      </motion>
+     <ensemble>
+           <temperature units='kelvin'> 200 </temperature>
+     </ensemble>
+   </system>
+</simulation>
+

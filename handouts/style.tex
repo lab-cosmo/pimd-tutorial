@@ -1,0 +1,74 @@
+\usepackage{exercise}
+\usepackage[obeyspaces]{url}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[scaled]{helvet}
+\usepackage{amsmath,amssymb,amsfonts,mathtools,cancel}
+
+% typeset in helvetica
+\renewcommand*\familydefault{\sfdefault} 
+
+\newcommand{\ipi}{i-PI}
+\newcommand{\hints}[1]{\emph{Hints: #1}}
+\newcommand{\lstinxml}{\lstinline[language=XML]}
+\newcommand{\lstinbash}{\lstinline[language=Bash]}
+\usepackage[space=true]{accsupp}
+
+\newcommand{\pdfactualhex}[3]{\newcommand{#1}{%
+\BeginAccSupp{method=hex,ActualText=#2}#3\EndAccSupp{}}}
+
+% PASTABLE lstlisting code
+\pdfactualhex{\pdfactualdspace}{2020}{\textperiodcentered\textperiodcentered}
+\pdfactualhex{\pdfactualsquote}{27}{'}
+\pdfactualhex{\pdfactualbtick}{60}{`}
+
+\lstset{tabsize=4,basicstyle=\ttfamily,breaklines=true,columns=flexible,emptylines=10000}
+\lstset{literate={'}{\pdfactualsquote}1
+                 {`}{\pdfactualbtick}1
+                 {\ \ }{\pdfactualdspace}2
+}
+
+\lstset{
+    basicstyle=\ttfamily,
+    keywordstyle=\color{BrickRed},
+    commentstyle=\color{Gray},
+    stringstyle=\color{black},
+    emphstyle=\color{RedOrange},
+    columns=flexible,
+    showstringspaces=false,
+    xleftmargin=1em,
+    deletekeywords={bin,all}
+}
+
+
+\lstdefinelanguage{Bash}
+{
+   alsodigit={-},
+   morekeywords={lmp_ubuntu, i-pi, vmd, for, done, python, mpirun, touch, tail, trajworks, autocorr, awk, i-pi-mergebeadspdb, grep, head, cp, cd, cat, ls, pwd, bash, sed, mkdir, vi, sh}
+   %morecomment=[s][\color{orange}]{#}{\}
+}
+
+%\lstdefinelanguage{Python}
+%{
+%    morecomment=[s][\color{orange}]{#}{\}
+%}
+
+
+\lstdefinelanguage{XML}
+{
+  morestring=[b][\color{RedOrange}]",
+%  morestring=[s]{>}{<},
+  morecomment=[s]{<?}{?>},
+  morecomment=[s][\color{orange}]{<!--}{-->},
+  identifierstyle=\color{BlueViolet},
+  keywordstyle=\color{ForestGreen},
+  stringstyle=\color{RedOrange},
+%  tagstyle=\color{Blue},
+  morekeywords={xmlns,version,type, mode, units, forcefield, filename, stride, overwrite, nbeads,prefix}% list your attributes here
+}
+
+\lstdefinestyle{XML}
+{
+\tagstyle=\color{Blue}
+}
