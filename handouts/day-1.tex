@@ -22,10 +22,10 @@ will be introduced.
 \begin{Exercise}[label={basic},title={Molecular Dynamics simulations doing in a different way:  server and clients}]
 
 What are the basic elements of Molecular Dynamics? 
-First of all, the dynamics of the electronic
+Under the Born-Oppenheimer
+approximation, the dynamics of the electronic
 degrees of freedom is completely decoupled from that of the nuclei, and the electrons always
-occupy the ground state for each configuration of the nuclei (Born-Oppenheimer
-approximation). 
+occupy the ground state for each configuration of the nuclei. 
 In a fully classical treatment of nuclei, the
 additional assumption is made that their 
 dynamics can be described in terms of the 
@@ -48,13 +48,13 @@ At first the equation of motion can be written as
 \end{equation}
 And then the time domain can be discretized into small  and finite time steps with length $\Delta t$.
 The key processes are illustrated in this flow chart.
-
-\centering
-    \includegraphics[width=0.15\textwidth]{mdchart.jpg}
-
+\begin{figure}
+    \centering
+    \includegraphics[width=0.25\textwidth]{mdchart.jpg}
+\end{figure}
 At the initialization stage, the program is informed about some basic information about the system,
 such as the number of atoms, their types, system size, etc.
-After that, the program goes through the loop ``Forces $\rightarrow$ Motion $\rightarrow$ Analysis" once at each discrete simulation time step.
+After that, the program goes through the loop ``Forces $\rightarrow$ Motion $\rightarrow$ Analysis" once per discrete simulation time step.
 The force acting on each atom $\textbf{f}_i=\dfrac{\partial V}{\partial \textbf{q}_i}$ is evaluated first,
 and are then used to advance the momenta and the coordinates of the nucleus such as
 $\textbf{p}_i(t+\Delta t)\leftarrow \textbf{p}_i(t)+\textbf{f}_i \Delta t$ and 
@@ -66,19 +66,18 @@ From the flow chart of Molecular Dynamics, one can observe that each block of th
 One can even carry out the force evaluation using one piece of code,
 communicate the results to another program, which does the motion and the analysis parts.
 This is precisely the philosophy behind i-PI,
-which acts like a server which takes care of the evolution of nuclei and the evaluation of
-properties of the system, 
-but relies on client codes for the evaluation
-of the forces and of potential energy.
+which acts like a server that takes care of the evolution of nuclei and the evaluation of
+properties of the system.
+And client codes evaluates forces and potential energy, and forward them to \ipi{}.
 
 \includegraphics[width=1.0\textwidth]{ipi-scheme.pdf}
 
 In this exercise, we will perform a simple Molecular Dynamics (MD) calculation.
 Instead of doing the simulation directly using out-of-the-box MD software such as LAMMPS,
-we are going to complete the task in a slightly more complicated way.
+we are going to complete the task in a slightly more complex way.
 We are going to use i-PI in conjunction with LAMMPS to demonstrate the work principles of i-PI 
 as well as the subtle advantages that it brings.
-The system of choice is one gas phase water molecule using NVT ensemble at 300K.
+The simulation will be performed on one gas phase water molecule using NVT ensemble at 300K.
 We will also record the kinetic and potential energy of the system.
 
 \Question
@@ -97,9 +96,9 @@ this line
 \begin{lstlisting}[language=bash]
 fix 1 all ipi 300K-G.0 32345 unix
 \end{lstlisting}
-is used, which basically means LAMMPS will only be in charge of the force evaluation and send that information to \ipi{}, 
-and the latter will take care of the motion and the analysis parts.
-All the information will be transmitted through a UNIX-domain socket with the tag \url{300K-G.0},
+is used, which basically means LAMMPS will only be in charge of the force evaluation and send that information to \ipi{}.
+The latter will take care of the motion and the analysis parts.
+All the information will be transmitted through a UNIX-domain socket with the name \url{300K-G.0},
 which is a mechanism for local, inter-process communication.
 
 \Question
@@ -115,7 +114,8 @@ and send the coordinates of the nuclei in the system to LAMMPS for force evaluat
 
 \Question
 Let's run an \ipi{}+LAMMPS Molecular Dynamics simulation!
-First launch \ipi{} by typing
+Open a terminal at the current directory and
+launch \ipi{} by typing
 \begin{lstlisting}[language=bash]
 $ i-pi input.xml
 \end{lstlisting}
@@ -234,7 +234,7 @@ contents of a class object, or the value of a variable. Finally tags can have at
 which are used to specify how the tag should be interpreted.
 A xml tag has the following syntax:
 \begin{lstlisting}[language=xml]
-<tag_name attribute_name=â€™attribute_dataâ€™>tag_data</tag_name>
+<tag_name attribute_name=Õattribute_dataÕ>tag_data</tag_name>
 \end{lstlisting}
 For example, in the tag
 \begin{lstlisting}[language=xml]
@@ -316,9 +316,8 @@ To run the simulation launch \ipi{} and lammps in background. It is advisable to
 $ i-pi input.xml &> log.ipi &
 $ lmp_ubuntu < in.lmp &> log.lmp &
 \end{lstlisting}
-To compute the average values of the observable use the program called \url{autocorr} which takes a time series as an input and evaluates its auto-correlation function. In addition to that it also computes the average and the associated error.
-\begin{lstlisting}[language=bash]
-$ grep -v "#" | awk '{ print $4}' | autocorr -maxlag 1
+To compute the average values of the observable use the program called \url{autocorr} which takes a time series as an input and evaluates its auto-correlation function. In addition to that it also computes the average and the associated error. Assuming that \lstinbash{$prefix} is the prefix used in \ipi{} input \begin{lstlisting}[language=bash]
+$ awk '!/#/{ print $6}' $prefix.out | head | autocorr -maxlag 1
 \end{lstlisting}
 
 \Question
@@ -329,13 +328,6 @@ $ cat $prefix.pos_0.pdb | trajworks -ipdb -vbox -gr -gr1 O -gr2 H -grmax 2 -hwin
 
 \Question
 Now go back to the previous folder and then to folder called \lstinbash{n.32}. Try to run a PIMD simulation for $32$ beads. You will find an \lstinbash{init.chk} file, containing an already equilibrated geometry of the extended system of 32 replicas of our system. Copy the i-pi and lammps inputs from \lstinbash{n.01}.
-\begin{lstlisting}[language=bash]
-$ cd ..
-$ cd n.32
-$ cp ../n.01/input.xml .
-$ cp ../n.01/in.lmp .
-$ cp ../n.01/data.lmp .
-\end{lstlisting}
 
 \Question
 Make the modifications as indicated by the comments in the xml snippet.
@@ -367,6 +359,7 @@ run 100000000
 Similarly go to folders \lstinbash{n.16, n.08, n.04} and \lstinbash{n.02} and launch PIMD simulations for number of beads indicated by the name of the folders.
 Compute the pair correlation function and the energy for all the simulations using \url{autocorr} and \url{trajworks}.
 
+
 \Question
 If you prefer saving time you could use a scripts provided called \url{extract-pot.bash}, \url{extract-kin.bash} and \url{extract-gOH.bash} present in parent directory. These compute the potential energy, kinetic energy and the pair correlation function respectively. 
 \begin{lstlisting}[language=bash]
@@ -393,6 +386,10 @@ $ cat pot.data
 32 2.812411e-01 1.435196e-02
 64 3.046206e-01 7.312336e-03
 \end{lstlisting}
+To plot the average estimates with errors bars launch \url{gnuplot} and type the following
+\begin{lstlisting}[language=bash]
+p 'pot.data' us 1:2:3 w errorl
+\end{lstlisting}
 
 \Question
 Executing \url{extract-gOH.bash} and \url{extract-kin.bash} will a file called gOH.data inside each of the sub directories \lstinbash{n.*}.
@@ -402,6 +399,11 @@ $ pwd
 $ bash extract-gOH.bash
 $ ls */gOH.data  
 n.01/gOH.data n.02/gOH.data n.04/gOH.data n.08/gOH.data n.16/gOH.data n.32/gOH.data n.64/gOH.data
+\end{lstlisting}
+We suggest you to plot each of the pair distribution functions and see how they converge with number of beads. Launch \url{gnuplot} and type the following to
+\end{lstlisting}
+\begin{lstlisting}[language=bash]
+p 'n.01/gOH.data' us 1:2 w l, 'n.02/gOH.data' us 1:2 w l, 'n.04/gOH.data' us 1:2 w l, 'n.08/gOH.data' us 1:2 w l, 'n.16/gOH.data' us 1:2 w l, 'n.32/gOH.data' us 1:2 w l, 'n.64/gOH.data' us 1:2 w l
 \end{lstlisting}
 
 \end{Exercise}
