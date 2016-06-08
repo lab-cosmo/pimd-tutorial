@@ -21,31 +21,30 @@ will be introduced.
 
 \begin{Exercise}[label={basic},title={Molecular Dynamics simulations doing in a different way:  server and clients}]
 
-What are the basic elements of Molecular Dynamics? 
+We will start by giving a short and simple introduction on the basics of molecular dynamics.
 Under the Born-Oppenheimer
 approximation, the dynamics of the electronic
 degrees of freedom is completely decoupled from that of the nuclei, and the electrons always
 occupy the ground state for each configuration of the nuclei. 
-In a fully classical treatment of nuclei, the
+In a fully classical treatment of nuclei, an
 additional assumption is made that their 
 dynamics can be described in terms of the 
 Hamiltonian
-\begin{equation}
-    H(\textbf{p},\textbf{q})=\sum_i \dfrac{\textbf{p}_i^2}{2 m_i} + V(\textbf{q}),
-\end{equation}
+\begin{eqnarray}
+    H(\textbf{p},\textbf{q})=\sum_i \dfrac{\textbf{p}_i^2}{2 m_i} + V(\{\textbf{q}_i\}),
+\end{eqnarray}
 where $m_i$, $\textbf{p}_i$ and $\textbf{q}_i$ 
 are the mass, the momentum and the coordinates of the $i$-th nucleus, respectively.
 
-How shall we translate this Hamiltonian into a 
-piece of computer program that automatically 
-propagates the dynamics?
-At first the equation of motion can be written as
-\begin{equation}
-   \dfrac{d \textbf{p}}{d t}= 
-   \dfrac{\partial H(\textbf{p},\textbf{q})}{\partial \textbf{q}},
-   ~\dfrac{d \textbf{q}}{d t}= 
-   -\dfrac{\partial H(\textbf{p},\textbf{q})}{\partial \textbf{p}}.
-\end{equation}
+In order to simulate the time evolution of particles in a system
+with this Hamiltonian, we need to take a couple of steps.
+The equation of motion can be written as
+\begin{eqnarray}
+   \dfrac{d \textbf{p}_i}{d t}&=& 
+   - \dfrac{\partial H(\textbf{p},\textbf{q})}{\partial \textbf{q}_i}=-\frac{d V(\{\textbf{q}_i\})}{d\textbf{q}_i} \\
+   \dfrac{d \textbf{q}_i}{d t}&=& 
+   \dfrac{\partial H(\textbf{p},\textbf{q})}{\partial \textbf{p}_i} = \frac{\textbf{p}_i}{m_i}.
+\end{eqnarray}
 And then the time domain can be discretized into small  and finite time steps with length $\Delta t$.
 The key processes are illustrated in this flow chart.
 \begin{figure}
