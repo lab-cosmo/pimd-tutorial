@@ -45,29 +45,35 @@ The equation of motion can be written as
    \dfrac{d \textbf{q}_i}{d t}&=& 
    \dfrac{\partial H(\textbf{p},\textbf{q})}{\partial \textbf{p}_i} = \frac{\textbf{p}_i}{m_i}.
 \end{eqnarray}
-And then the time domain can be discretized into small  and finite time steps with length $\Delta t$.
-The key processes are illustrated in this flow chart.
-\begin{figure}
-    \centering
+
+The time domain can then be discretized into small  and finite time steps with length $\Delta t$.
+The key processes of a molecular dynamics run are illustrated in the flowchart below.
+\begin{figure}[h]
+    \begin{center}
     \includegraphics[width=0.25\textwidth]{mdchart.jpg}
+    \end{center}
 \end{figure}
 At the initialization stage, the program is informed about some basic information about the system,
 such as the number of atoms, their types, system size, etc.
 After that, the program goes through the loop ``Forces $\rightarrow$ Motion $\rightarrow$ Analysis" once per discrete simulation time step.
-The force acting on each atom $\textbf{f}_i=\dfrac{\partial V}{\partial \textbf{q}_i}$ is evaluated first,
-and are then used to advance the momenta and the coordinates of the nucleus such as
+The force acting on each atom $\textbf{f}_i=-\dfrac{\partial V}{\partial \textbf{q}_i}$ is evaluated first,
+and are then used to advance the momenta and the coordinates of the nucleus. 
+
+A simple integrator for the equations of motion (which is not generally used by any program) that
+evolves the position and momenta in time is given by
 $\textbf{p}_i(t+\Delta t)\leftarrow \textbf{p}_i(t)+\textbf{f}_i \Delta t$ and 
-$\textbf{q}_i(t+\Delta t)\leftarrow \textbf{q}_i(t)+\dfrac{\textbf{p}_i}{m_i} \Delta t$, 
- in its simplest form.
+$\textbf{q}_i(t+\Delta t)\leftarrow \textbf{q}_i(t)+\dfrac{\textbf{p}_i}{m_i} \Delta t$. In practice most
+programs use the Verlet integrator or higher order integrators which are much more accurate.
+
 At the analysis step, the properties of interest for the system can be computed, stored, or analyzed on the fly.
 
-From the flow chart of Molecular Dynamics, one can observe that each block of the program can be easily modularized.
-One can even carry out the force evaluation using one piece of code,
-communicate the results to another program, which does the motion and the analysis parts.
+From the flowchart above, one can observe that each block of the program can be easily modularized.
+One can, for example, carry out the force evaluation using one program,
+and only communicate the results to another program which performs the motion and the analysis parts.
 This is precisely the philosophy behind i-PI,
-which acts like a server that takes care of the evolution of nuclei and the evaluation of
-properties of the system.
-And client codes evaluates forces and potential energy, and forward them to \ipi{}.
+which acts as a server that takes care of the evolution of nuclei and the evaluation of
+properties of the system, having as clients other programs that compute forces and potential energies.
+An graphical representation of how \ipi{} works is given in the scheme below.
 
 \includegraphics[width=1.0\textwidth]{ipi-scheme.pdf}
 
