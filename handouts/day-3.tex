@@ -58,7 +58,7 @@ In this first exercise, we will calculate time correlation functions with path i
 \begin{itemize}
 
 \item \textbf{Vibrational spectra with classical nuclei (Time: 10 minutes)} \\
-We will start by calculating both dipole and velocity correlation functions with classical nuclei. In order to do that, we have provided pre-computed i-PI checkpoint files from a long thermalization run of Ice Ih at 200 K. Checkpoint files are a feature of i-PI that can be written through the keyword \lstinxml$<checkpoint>$ in the \lstinxml$<output>$ block of i-PI's input file, for which a syntax example would be:
+We will start by calculating both dipole and velocity correlation functions with classical nuclei. In order to do this, we have provided pre-computed i-PI checkpoint files from a long thermalization run of Ice Ih at 200 K. Checkpoint files are a feature of i-PI that can be written through the keyword \lstinxml$<checkpoint>$ in the \lstinxml$<output>$ block of i-PI's input file, for which a syntax example would be:
     
 \begin{lstlisting}[language=XML]
 <checkpoint filename="restart" stride="2000" overwrite="false" />
@@ -97,7 +97,7 @@ The two last lines are there so as to inform LAMMPS (by changing its input), the
 
 After approximately 10 minutes this simulation should be done and you can analyze the outputs. {\it Immediately after this simulation ends, launch the TRPMD simulation on the second item below before analyzing the outputs, so that it starts running in the background}.
 
-Look at outputs using \texttt{gnuplot} and \texttt{vmd}. In order to create the dipole and velocity autocorrelations, we provide scripts in the \texttt{day-3/tools} folder that uses \lstinbash$trajworks$ functionalities in order to perform fourier transforms and calculate auto correlation functions, called \lstinbash$post-vel$ and \lstinbash$post-dpl$. We will actually calculate the dipole derivative auto correlation function, which already includes the $\omega^2$ factor that appears when relating the Kubo transform of the autocorrelation function to the standard canonical one.
+Look at outputs using \texttt{gnuplot} and \texttt{vmd}. In order to create the dipole and velocity autocorrelations, we provide scripts in the \texttt{day-3/tools} folder that uses \lstinbash$trajworks$ functionalities in order to perform fourier transforms and calculate autocorrelation functions, called \lstinbash$post-vel$ and \lstinbash$post-dpl$. We will actually calculate the dipole derivative autocorrelation function, which already includes the $\omega^2$ factor that appears when relating the Kubo transform of the autocorrelation function to the standard canonical one.
 
 Copy files to the folder where you performed the simulation and run the following commands:
 
@@ -108,7 +108,7 @@ $ sh post-dpl
 $ sh post-vel
 \end{lstlisting}
 
-Visualize (either with \texttt{xmgrace} or \texttt{gnuplot}) the files \texttt{dpl.ft} (Fourier transform of the dipole auto correlation) and \texttt{vel.ft} (Fourier transform of the velocity auto correlation). 
+Visualize (either with \texttt{xmgrace} or \texttt{gnuplot}) the files \texttt{dpl.ft} (Fourier transform of the dipole autocorrelation) and \texttt{vel.ft} (Fourier transform of the velocity autocorrelation). 
 
 Analyze similarities and differences between them (remember this is a short simulation that cannot yield very converged correlation functions). In the folder \texttt{ex-1/precomputed-trajectories/nve/} you will find several longer precomputed and preanalyzed trajectories.
 
@@ -200,31 +200,34 @@ A way to check the quality of the real time autocorrelation function approximate
 
 \begin{eqnarray}
 c_{vv}(i \lambda \hbar)=\int_0^\infty f(\lambda, \omega) \tilde{F}_{vv}(\omega) d\omega \\
-f(\lambda, \omega)=\frac{\beta\hbar\omega\cosh(\beta\hbar\omega/2-\lambda\hbar\omega)}{2\pi\sinh(\beta\hbar\omega/2.)}
+f(\lambda, \omega)=\frac{\beta\hbar\omega\cosh(\beta\hbar\omega/2-\lambda\hbar\omega)}{2\pi\sinh(\beta\hbar\omega/2)}
 \end{eqnarray}
 
 \noindent where $F_{vv}(\omega)$ is the Fourier transform of the Kubo transformed real time velocity correlation function.
 
 In Ref. \cite{tuck08book} one can also find the expression that relates the imaginary time square displacement and the real time velocity correlation function. Ref. \cite{habe+07jcp} and references therein also point to derivations of these expressions. 
 
-By reconstructing $c_{vv}(i \lambda \hbar)$ from the vibrational spectra obtained with either TRPMD, RPMD, or CMD, and comparing to the exact $c_{vv}(i \lambda \hbar)$ obtained in Ex. \ref{imaginarytime}, one can assess (even if indirectly) how large the errors are. 
+By reconstructing $c_{vv}(i \lambda \hbar)$ from the vibrational spectra obtained with either TRPMD, RPMD, or CMD, or even from a simulation with classical nuclei (our NVE) and comparing to the exact $c_{vv}(i \lambda \hbar)$ obtained in Ex. \ref{imaginarytime}, one can assess (even if indirectly) how large the errors are. 
 
 In order to reconstruct the imaginary time correlations from real time data we provide the script \texttt{tools/get\_imacf\_from\_real.py}. The syntax is:
 
 \begin{lstlisting}[language=Bash]
-python get_imacf_from_real.py [filename] [temperature] [nbeads]
+python get_imacf_from_real.py [name] [temperature] [nslices]
 \end{lstlisting}
 
-In the folder \texttt{ex-3/convergedspecs} you will find the files \texttt{trpmd.vel}, \texttt{rpmd.vel}, and \texttt{cmd.vel}. Type (the simulations provided here were run with 56 beads):
+\noindent where \texttt{nslices} is the number of imaginary time slices (or "beads") one wants to reconstruct.
+
+In the folder \texttt{ex-3/convergedspecs} you will find the files \texttt{nve.vv}, \texttt{trpmd.vv}, \texttt{rpmd.vv}, and \texttt{cmd.vv}. Type:
 
 \begin{lstlisting}[language=Bash,emph={\$}]
 $ cd ex-3/convergedspecs
-$ python ../../tools/get_imacf_from_real.py trpmd.vel 200 56 > trpmd.imvacf
-$ python ../../tools/get_imacf_from_real.py rpmd.vel 200 56 > rpmd.imvacf
-$ python ../../tools/get_imacf_from_real.py cmd.vel 200 56 > cmd.imvacf
+$ python ../../tools/get_imacf_from_real.py nve.vv 200 56 > nve.imvacf
+$ python ../../tools/get_imacf_from_real.py trpmd.vv 200 56 > trpmd.imvacf
+$ python ../../tools/get_imacf_from_real.py rpmd.vv 200 56 > rpmd.imvacf
+$ python ../../tools/get_imacf_from_real.py cmd.vv 200 56 > cmd.imvacf
 \end{lstlisting}
 
-Compare all the imaginary time correlations with the one provided in \texttt{ex-2/precomputed-imvacf/}. Which method yields the most accurate imaginary time correlation function?
+Compare all the imaginary time correlations with the one provided in \texttt{ex-2/precomputed-imvacf/}. Are the imaginary functions reconstructed from different methods appreciably different? Which is the one that is further away from the exact imaginary time correlation? Can you think about reasons for their similarities/differences?
 
 
 \end{Exercise}
