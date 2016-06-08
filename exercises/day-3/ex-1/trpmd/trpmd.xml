@@ -15,7 +15,7 @@
        <address>h2o-trpmd-xxx</address>
    </ffsocket>
    <system>
-     <initialize nbeads='56'>
+     <initialize nbeads='48'>
          <file mode='chk' > ../../checkpoint-pimd/h2o-ice-pimd.restart_xxx  </file>
          <velocities mode="thermal" units='kelvin'> 200 </velocities>
      </initialize>

@@ -53,7 +53,7 @@ All files necessary for the exercises below can be found in the \texttt{day-3} f
 
 \begin{Exercise}[label={realtime},title={Velocity and dipole real time correlation functions}]
 
-In this first exercise, we will calculate time correlation functions with path integral based methods, namely centroid molecular dynamics (CMD)~\cite{cao-voth94jcp}, ring polymer molecular dynamics (RPMD)~\cite{crai-mano04jcp}, and thermostated ring polymer molecular dynamics (TRPMD)\cite{ross+14jcp}. All these methods have been explained in the lectures, and we encourage you to look at the respective references in case you are interested in more details. We note that for the TIP4P-style of charges, the dipole moment is a linear function of the coordinates, and therefore the dipole estimator in CMD, RPMD, and TRPMD is always the same and can be calculated from the centroid positions (or velocities, in the case of its derivative). Due to time constraints we will only perform short (10 ps) simulations, and you'll be provided extensive outputs for further analysis in the exercises that require it. Inputs for simulating different PI-based methods are also provided.
+In this first exercise, we will calculate time correlation functions with path integral based methods, namely centroid molecular dynamics (CMD)~\cite{cao-voth94jcp}, ring polymer molecular dynamics (RPMD)~\cite{crai-mano04jcp}, and thermostated ring polymer molecular dynamics (TRPMD)\cite{ross+14jcp}. All these methods have been explained in the lectures, and we encourage you to look at the respective references for in more details. We note that for the TIP4P-style of charges, the dipole moment is a linear function of the coordinates, and therefore the dipole estimator in CMD, RPMD, and TRPMD is always the same and can be calculated from the centroid positions (or velocities, in the case of its derivative). Due to time constraints we will only perform short (10 ps) simulations, and you'll be provided extensive outputs for further analysis in the exercises that require it. Inputs for simulating different PI-based methods are also provided.
 
 \begin{itemize}
 
@@ -73,7 +73,7 @@ $ cd ex-1/nve
 $ vi nve.xml
 \end{lstlisting}
 
-   The file \texttt{nve.xml} is an example of input for NVE simulations. Take some time reading through it. For the current simulation, the most important quantity we will print out is the velocity of the atoms (here given by the centroid velocities since there is only one bead). You will notice that there are some fields marked with \texttt{xxx} in the input file. These should be {\it substituted by a number of your choice}, corresponding to the number of the checkpoint file you want to choose. You can substitute the number by hand or use a command. For example, in order to create a new directory with all necessary input files, run:
+   The file \texttt{nve.xml} is an example of input for NVE simulations. Take some time reading through it. For the current simulation, the most important quantity we will print out is the velocity of the atoms (here given by the centroid velocities since there is only one bead). You will notice that there are some fields marked with \texttt{xxx} in the input file. These should be {\it substituted by a number of your choice}, corresponding to the identity of the checkpoint file you want to choose. You can substitute \texttt{xxx} by a number  by hand or use a command. For example, in order to create a new directory with all necessary input files, run:
 
 \begin{lstlisting}[language=Bash,emph={\$}]
 $ number=6
