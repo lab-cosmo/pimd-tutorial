@@ -112,14 +112,14 @@ Now open the \ipi{} input file \url{input.xml} in the same folder.
 For a moment let us ignore all the other entries but only focus on the followings
 \begin{lstlisting}[language=xml]
  <ffsocket name="tip4p" pbc="true" mode="unix">
-    <address> 300K-G.0 </address>
+ <address> 300K-G.0 </address>
  </ffsocket>
 \end{lstlisting}
 This indicates that \ipi{} will receive any information sent by LAMMPS through the UNIX-domain socket with the tag \url{300K-G.0},
 and send the coordinates of the nuclei in the system to LAMMPS for force evaluations using the same socket.
 
 \Question
-Let's run an \ipi{}+LAMMPS Molecular Dynamics simulation!
+Let"s run an \ipi{}+LAMMPS Molecular Dynamics simulation!
 Open a terminal at the current directory and
 launch \ipi{} by typing
 \begin{lstlisting}[language=bash]
@@ -183,12 +183,12 @@ and \url{RESTART} that contains all the information to restart the simulation.
 
 \begin{Exercise}[label={inputs},title={Keywords, outputs, and units of \ipi{}}]
 \noindent In this exercise we are going to familiarize ourselves with the important notations of \ipi{} input files.
-Let's take a look at the input files in the folder \url{ex-2}.
+Let"s take a look at the input files in the folder \url{ex-2}.
 The simulation system of choice here is one gas phase water molecule using NVT ensemble at 300K.
 We are going to use CP2K~\cite{CP2K} for force evaluations.
 
 \Question
-Let's take a close look at the units first - which are the source of many errors during simulation and analysis.
+Let"s take a close look at the units first - which are the source of many errors during simulation and analysis.
 All the units used internally by \ipi{} are atomic units, as given
 below.
 
@@ -216,17 +216,18 @@ wishes so.
 For example, in \url{ex-2/input.xml}
 we used
 \begin{lstlisting}[language=xml]
-<properties stride='1' filename='out'>
-  [ step, time{picosecond}, conserved, temperature{kelvin}, potential ]
+<properties stride="1" filename="out">
+[ step, time{picosecond}, conserved, temperature{kelvin}, potential ]
 </properties>
-<trajectory filename='xc' stride='1'>x_centroid{angstrom}</trajectory>
+<trajectory filename="xc" stride="1"> x_centroid{angstrom}
+</trajectory>
 \end{lstlisting}
 so that the time, temperature, and the trajectory will written out in the units of picosecond, Kelvin, and Angstrom in the output files, respectively.
 Similarly, the units of the initialization files can be specified such as
 \begin{lstlisting}[language=xml]
 <file mode="xyz" units="angstrom"> h2o.xyz </file>
 <cell mode="abc" units="angstrom"> [ 8, 8, 8 ] </cell>
-<velocities mode="thermal" units="kelvin"> 300  </velocities>
+<velocities mode="thermal" units="kelvin"> 300 </velocities>
 \end{lstlisting}
 When using \ipi{}, you can play around with the units to facilitate the initialization process as well as subsequent analyses. 
 
@@ -244,10 +245,10 @@ A xml tag has the following syntax:
 \end{lstlisting}
 For example, in the tag
 \begin{lstlisting}[language=xml]
-      <thermostat mode="pile_l">
-        <tau units="femtosecond">100</tau> 
-        <pile_lambda>0.1</pile_lambda>
-      </thermostat>
+<thermostat mode="pile_l">
+<tau units="femtosecond">100</tau> 
+<pile_lambda>0.1</pile_lambda>
+</thermostat>
 \end{lstlisting}
 the tag name \lstinxml{thermostat} indicates which part of the simulation options is being defined,
 \lstinxml{mode="pile_l"} specifies the type of thermostat in use,
@@ -262,21 +263,21 @@ to run \ipi{} and the clients on different computers.
 Here we demostate how to use the Internet (TCP/IP) sockets.
 In \ipi{} inout file we have
 \begin{lstlisting}[language=xml]
-    <ffsocket mode='inet' name='cp2k'>
-         <latency>  1.00000000e-02</latency>
-         <slots>4</slots>
-         <port> 20614 </port>
-         <timeout>  6.00000000e+02</timeout>
-         <address> localhost </address>
-   </ffsocket> 
+<ffsocket mode="inet" name="cp2k">
+<latency> 1.00e-02</latency>
+<slots> 4 </slots>
+<port> 20614 </port>
+<timeout>  6.00000000e+02 </timeout>
+<address> localhost </address>
+</ffsocket> 
 \end{lstlisting}
 and in CP2K input file \url{cp2k.in} we have the following
-\begin{lstlisting}[language=xml]
+\begin{lstlisting}[language=bash]
 &MOTION
-  &DRIVER
-   HOST localhost
-   PORT 20614
-  &END DRIVER
+&DRIVER
+HOST localhost
+PORT 20614
+&END DRIVER
 &END MOTION
 \end{lstlisting}
 The above means that an Internet domain socket with port number 20614 is used for the communication.
@@ -286,7 +287,7 @@ for use in important system processes or Internet communication, it is generally
 to only use numbers in the range 1025-32767 for simulations.
 
 \Question
-Now let's see whether the Internet domain socket can indeed connect.
+Now let"s see whether the Internet domain socket can indeed connect.
 Type the following to start \ipi{} and CP2K:
 \begin{lstlisting}[language=bash]
 $ i-pi input.xml &> log.ipi &
@@ -301,7 +302,7 @@ network interfaces (see the i-PI documentation for some examples).
 \end{Exercise}
 
 \begin{Exercise}[label={water},title={Benchmark of quantum effects in a water molecule}]
-\noindent In this exercise we will perform a series of PIMD calculations to observe and benchmark nuclear quantum effects in a molecular system. Our system of choice will be a single molecule of water in vacuum so that simulations don't take too much time and memory. We will be sampling an NVT ensemble using a q-TIP4P forcefield implemented within Lammps. We will look at the change in the kinetic and potential energy and the Oxygen--Hydrogen pair distribution function as we simulate in the quantum regime.
+\noindent In this exercise we will perform a series of PIMD calculations to observe and benchmark nuclear quantum effects in a molecular system. Our system of choice will be a single molecule of water in vacuum so that simulations don"t take too much time and memory. We will be sampling an NVT ensemble using a q-TIP4P forcefield implemented within Lammps. We will look at the change in the kinetic and potential energy and the Oxygen--Hydrogen pair distribution function as we simulate in the quantum regime.
 
 \Question
 Look at the \ipi{} input file in \url{n.01/input.xml}. It is an \ipi{} input for a molecular dynamics simulations. Observe the 
@@ -314,8 +315,8 @@ Observe the \lstinxml$<initialize></initialize>$ section. We will be initialzing
 From the previous exercise, it should be clear that the option \lstinbash{nbeads} should be $1$ for a classical simulation.
 
 \begin{lstlisting}[language=xml]
-<initialize nbeads='1'>  
-<file mode='chk' > init.chk </file>
+<initialize nbeads="1">  
+<file mode="chk"> init.chk </file>
 </initialize>
 \end{lstlisting}
 
@@ -332,18 +333,19 @@ logs as useful information can be extracted from them.
 $ i-pi input.xml &> log.ipi &
 $ lmp_ubuntu < in.lmp &> log.lmp &
 \end{lstlisting}
-To compute the average values of the observable use the program called \url{autocorr} which takes a time series as an input and evaluates its auto-correlation function. In addition to that it also computes the average and the associated error. Assuming that \lstinbash{$prefix} is the prefix used in \ipi{} input \begin{lstlisting}[language=bash]
-$ awk '!/#/{ print $6}' $prefix.out | tail -n +100 | \
-       autocorr -maxlag 10 | head
+To compute the average values of the observable use the program called \url{autocorr} which takes a time series as an input and evaluates its auto-correlation function. It requires a mandatory flag called \url{-maxlag} which is the cutoff at the auto-correlation function is truncated. In addition to that it also computes the average and the associated error. Assuming that \lstinbash{$prefix} is the prefix used in \ipi{} input \begin{lstlisting}[language=bash]
+$ awk "!/#/{ print $6}" $prefix.out | tail -n +100 | \
+ autocorr -maxlag 10 | head
 \end{lstlisting}
 
 \Question
-To compute the Oxygen--Hydrogen pair correlation function we suggest you to use \url{trajworks} and follow the syntax as shown. 
+To compute the Oxygen--Hydrogen pair correlation function we suggest you to use \url{trajworks} and follow the syntax as shown.
 \begin{lstlisting}[language=bash]
 $ cat $prefix.pos_0.pdb | trajworks -ipdb -vbox \ 
-      -gr -gr1 O -gr2 H -grmax 2 -grbins 200 -hwin triangle \
-      -hwinfac 2  > gOO.data 
+ -gr -gr1 O -gr2 H -grmax 2 -grbins 200 -hwin triangle \
+ -hwinfac 2 > gOO.data 
 \end{lstlisting}
+The \url{-gr} flag activates the computation of a pair correlation for atom types given by \url{-gr1} and \url{-gr2} until a maximum distance given by \url{grmax} with a resolution given by \url{-grbins} grid points. The flags \url{-hwin} and \url{-hwinfac} indicate smoothening options.
 
 \Question
 Now go one folder up, and create new folder, copying all the input files 
@@ -363,11 +365,11 @@ Modify the input files so that you will run a PIMD calculation with 32 beads.
 Make the modifications as indicated by the comments in the xml snippet.
 \begin{lstlisting}[language=xml]
 <!-- change nbeads to 32--> 
-<initialize nbeads='1'>  
-<file mode='chk' units='angstrom'> init.chk </file>
+<initialize nbeads="1">  
+<file mode="chk" units="angstrom"> init.chk </file>
 </initialize>
 
-<ffsocket mode='unix' pbc='false' name='driver'>
+<ffsocket mode="unix" pbc="false" name="driver">
 <!-- change the addess to driver.32--> 
 <address>driver.01</address>
 <port>31400</port>
@@ -387,7 +389,7 @@ run 100000000
 \end{lstlisting}
 
 \Question
-The folders \lstinbash{n.??} have already been prepared for you to run simulations with 
+The folders \lstinbash{n.*} have already been prepared for you to run simulations with 
 increasing numbers of beads. You should start one PIMD calculation in each of those folders.
 Compute the pair correlation function and the energy for all the simulations using \url{autocorr} and \url{trajworks}.
 
@@ -408,7 +410,7 @@ Executing \url{extract-pot.bash} and \url{extract-kin.bash} will generate the av
 of \ipi{}. Unless otherwise specified, all outputs are in atomic units.}
 \begin{lstlisting}[language=bash]
 $ pwd
-tutoriap-pimd16/day-1/ex-3
+tutorial-pimd16/day-1/ex-3
 $ bash extract-pot.bash > pot.data
 $ cat pot.data
 #nbeads avg error
@@ -422,8 +424,9 @@ $ cat pot.data
 \end{lstlisting}
 To plot the average estimates with errors bars launch \url{gnuplot} and type the following
 \begin{lstlisting}[language=bash]
-p 'pot.data' us 1:2:3 w errorl
+> p "pot.data" us 1:2:3 w errorl
 \end{lstlisting}
+You should observe that the kinetic and potential energy individually converge to their quantum limit for \url{nbeads} $\sim 32$.
 
 \Question
 Executing \url{extract-gOH.bash} and \url{extract-kin.bash} will a file called gOH.data inside each of the sub directories \lstinbash{n.*}.
@@ -432,17 +435,18 @@ $ pwd
 tutorial-pimd16/day-1/ex-3
 $ bash extract-gOH.bash
 $ ls */gOH.data  
-n.01/gOH.data n.02/gOH.data n.04/gOH.data n.08/gOH.data n.16/gOH.data n.32/gOH.data n.64/gOH.data
+n.01/gOH.data n.02/gOH.data n.04/gOH.data \
+n.08/gOH.data n.16/gOH.data n.32/gOH.data n.64/gOH.data
 \end{lstlisting}
 We suggest you to plot each of the pair distribution functions and see how they converge with number of beads. Launch \url{gnuplot} and type the following to
 
 \begin{lstlisting}[language=bash]
-> p 'n.01/gOH.data' u 1:2 w l, 'n.02/gOH.data' u 1:2 w l,\
-    'n.04/gOH.data' u 1:2 w l, 'n.08/gOH.data' u 1:2 w l,\
-    'n.16/gOH.data' u 1:2 w l, 'n.32/gOH.data' u 1:2 w l,\
-    'n.64/gOH.data' u 1:2 w l
+> p "n.01/gOH.data" u 1:2 w l, "n.02/gOH.data" u 1:2 w l,\
+ "n.04/gOH.data" u 1:2 w l, "n.08/gOH.data" u 1:2 w l,\
+ "n.16/gOH.data" u 1:2 w l, "n.32/gOH.data" u 1:2 w l,\
+ "n.64/gOH.data" u 1:2 w l
 \end{lstlisting}
-
+You should observe the broadening of the probability distributions as you approach the quantum limit.
 \end{Exercise}
 
 \begin{Exercise}[label={ch5},title={PIMD in the strong quantum regime:  gas phase Methanium}]
@@ -479,7 +483,7 @@ $ cat $prefix.pos_* | trajworks -ipdb -vbox -gr -gr1 H\
 You can use \url{gnuplot} to observe the difference int the pair distributions functions with and without PIMD. 
 Launch gnuplot by typing \url{gnuplot} on the terminal and execute the following statement 
 \begin{lstlisting}[language=bash]
-> p 'n.128/gHH.data' u 1:2 w l, 'n.001/gHH.data' u 1:2 w l
+> p "n.128/gHH.data" u 1:2 w l, "n.001/gHH.data" u 1:2 w l
 \end{lstlisting}
 
 \end{Exercise}
