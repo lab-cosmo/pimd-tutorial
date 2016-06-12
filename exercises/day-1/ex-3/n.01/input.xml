@@ -1,7 +1,7 @@
 <simulation verbosity="high">
   <output prefix="simulation">
     <properties stride="4" filename="out">  [ time{picosecond}, conserved, temperature{kelvin}, kinetic_cv(O){electronvolt}, kinetic_cv(H){electronvolt}, potential{electronvolt} ] </properties>
-    <trajectory filename="pos" format="pdb" stride="40"> positions </trajectory>
+    <trajectory filename="pos" format="xyz" stride="40"> positions </trajectory>
     <checkpoint stride="400" filename="chk" overwrite="true"/>
   </output>
   <total_steps>40000</total_steps>

@@ -1,6 +1,6 @@
 \documentclass{article}
 \input{./style.tex}
-\title{Introduction path integral \\molecular dynamics using \ipi{}}
+\title{An introduction to path integral \\molecular dynamics using \ipi{}}
 \author{Venkat Kapil, Bingqing Cheng}
 \date{June 2016}
 
@@ -15,18 +15,18 @@ molecular dynamics simulations using \ipi{}.
 We will begin by performing conventional
 molecular dynamics simulation of classical nuclei,
 and move towards highly quantum mechanical systems.
-During the process, the design principles, 
+In the process, the design principles, 
 features and input/output format of \ipi{} 
 will be introduced.
 
-\begin{Exercise}[label={basic},title={Molecular Dynamics simulations doing in a different way:  server and clients}]
+\begin{Exercise}[label={i-pi},title={Molecular Dynamics: a client/server approach}]
 
-We will start by giving a short and simple introduction on the basics of molecular dynamics.
+We will start by providing a basic introduction to molecular dynamics.
 Under the Born-Oppenheimer
 approximation, the dynamics of the electronic
 degrees of freedom is completely decoupled from that of the nuclei, and the electrons always
 occupy the ground state for each configuration of the nuclei. 
-In a fully classical treatment of nuclei, an
+In a fully classical treatment of nuclei, the
 additional assumption is made that their 
 dynamics can be described in terms of the 
 Hamiltonian
@@ -75,18 +75,18 @@ which acts as a server that takes care of the evolution of nuclei and the evalua
 properties of the system, having as clients other programs that compute forces and potential energies.
 An graphical representation of how \ipi{} works is given in the scheme below.
 
-\includegraphics[width=1.0\textwidth]{ipi-scheme.pdf}
+{\centering\includegraphics[width=0.9\textwidth]{ipi-scheme.pdf}}
 
 In this exercise, we will perform a simple Molecular Dynamics (MD) calculation.
-Instead of doing the simulation directly using out-of-the-box MD software such as LAMMPS,
+Instead of doing the simulation directly using an out-of-the-box MD software such as LAMMPS~\cite{plim95jcp},
 we are going to complete the task in a slightly more complex way.
-We are going to use i-PI in conjunction with LAMMPS to demonstrate the work principles of i-PI 
-as well as the subtle advantages that it brings.
+We are going to use i-PI in conjunction with LAMMPS to demonstrate a client/server model 
+for (path integral) molecular dynamics as well as the subtle advantages that it brings.
 The simulation will be performed on one gas phase water molecule using NVT ensemble at 300K.
 We will also record the kinetic and potential energy of the system.
 
 \Question
-Read the LAMMPS input file \url{ex-1/300K-G-h2o/in.water}.
+Read the LAMMPS input file \url{ex-1/in.water}.
 The force field specifications
 \begin{lstlisting}[language=bash]
 pair_style lj/cut/tip4p/long 1 2 1 1 0.278072379 17.007
@@ -94,14 +94,15 @@ bond_style class2
 angle_style harmonic
 kspace_style pppm/tip4p 0.0001
 \end{lstlisting}
-means that a q-TIP4P force field is being used~\cite{habe-mano11pccp}.
+means that a q-TIP4P force field is being used~\cite{habe+09jcp}.
 
-On the parts of the input file that specifies how motions are propagated,
-this line
+In the part of the input file that specifies how to integrate the
+equations of motion, this line
 \begin{lstlisting}[language=bash]
 fix 1 all ipi 300K-G.0 32345 unix
 \end{lstlisting}
-is used, which basically means LAMMPS will only be in charge of the force evaluation and send that information to \ipi{}.
+is used, which basically means LAMMPS will only be in charge of the 
+force evaluation and send that information to \ipi{}.
 The latter will take care of the motion and the analysis parts.
 All the information will be transmitted through a UNIX-domain socket with the name \url{300K-G.0},
 which is a mechanism for local, inter-process communication.
@@ -142,7 +143,7 @@ Now it is a good time to start LAMMPS.
 Open up a second terminal either manually or by typing \url{Ctrl+Shift+t}
 and start LAMMPS by entering the command
 \begin{lstlisting}[language=bash]
-$ lmp_ubuntu < in.lmp
+$ lmp_ubuntu < in.water
 \end{lstlisting}
 Then LAMMPS should start and dump out some outputs.
 
@@ -162,7 +163,7 @@ Now look at whether \ipi{} is still running.
 Notice that although the evolution of MD is paused, \ipi{} itself does not die off but instead continue to run and wait for new client to take over.
 Now start LAMMPS again by typing
 \begin{lstlisting}[language=bash]
-$ lmp_ubuntu < in.lmp
+$ lmp_ubuntu < in.lammps
 \end{lstlisting}
 What happens to \ipi{} now?
 
@@ -170,7 +171,7 @@ What happens to \ipi{} now?
 What if one stops \ipi{}? 
 Kill \ipi{} by typing \url{Ctrl+c} where it is running, or create a file named \url{EXIT} in the folder where \ipi{} is running
 (you can use the bash command \url{touch EXIT}).
-Watch how \ipi{} respond, and how LAMMPS reacts.
+Watch how \ipi{} responds, and how LAMMPS reacts.
 Think about what are the advantages of a clean exit when a MD program stops unexpectedly.
 
 \Question
@@ -180,14 +181,14 @@ You should have \url{gas-nvt-300k.out} that describe the system properties,
 and \url{RESTART} that contains all the information to restart the simulation. 
 \end{Exercise}
 
-\begin{Exercise}[label={basic},title={Keywords, outputs, and units of \ipi{}}]
+\begin{Exercise}[label={inputs},title={Keywords, outputs, and units of \ipi{}}]
 \noindent In this exercise we are going to familiarize ourselves with the important notations of \ipi{} input files.
-A good way to learn is via examples. So let's take a look at the input files in the folder \url{ex-2/cp2k}.
+Let's take a look at the input files in the folder \url{ex-2}.
 The simulation system of choice here is one gas phase water molecule using NVT ensemble at 300K.
-We are going to use CP2K for force evaluations.
+We are going to use CP2K~\cite{CP2K} for force evaluations.
 
 \Question
-Let's take a close look at the units first, which is \emph{the} trickiest part of simulation and analysis.
+Let's take a close look at the units first - which are the source of many errors during simulation and analysis.
 All the units used internally by \ipi{} are atomic units, as given
 below.
 
@@ -212,15 +213,15 @@ Pressure & N.A. & 2.9421912e13 Pa\\
 By default, both input and output data are given in atomic
 units, but in most cases the default units can be overridden if one
 wishes so. 
-For example, in \url{ex-2/cp2k/input.xml}
+For example, in \url{ex-2/input.xml}
 we used
 \begin{lstlisting}[language=xml]
 <properties stride='1' filename='out'>
-  [ step, time{picosecond}, conserved, temperature{kelvin}, potential, pressure_cv{atmosphere} ]
+  [ step, time{picosecond}, conserved, temperature{kelvin}, potential ]
 </properties>
 <trajectory filename='xc' stride='1'>x_centroid{angstrom}</trajectory>
 \end{lstlisting}
-so that the time, temperature, pressure, and the trajectory will written out in the units of picosecond, Kelvin, atm, and Angstrom in the output files, respectively.
+so that the time, temperature, and the trajectory will written out in the units of picosecond, Kelvin, and Angstrom in the output files, respectively.
 Similarly, the units of the initialization files can be specified such as
 \begin{lstlisting}[language=xml]
 <file mode="xyz" units="angstrom"> h2o.xyz </file>
@@ -239,7 +240,7 @@ contents of a class object, or the value of a variable. Finally tags can have at
 which are used to specify how the tag should be interpreted.
 A xml tag has the following syntax:
 \begin{lstlisting}[language=xml]
-<tag_name attribute_name=Õattribute_dataÕ>tag_data</tag_name>
+<tag_name attrib_name=attrib_data>tag_data</tag_name>
 \end{lstlisting}
 For example, in the tag
 \begin{lstlisting}[language=xml]
@@ -258,7 +259,7 @@ It is worth spending a bit more time to explain about the type of socket used he
 For the communication between \ipi{} and client codes, both Internet and Unix domain sockets can be used: the
 latter allow for fast communication on a single node, whereas the former make it possible
 to run \ipi{} and the clients on different computers.
-Here we demostate how to the Internet domain sockets.
+Here we demostate how to use the Internet (TCP/IP) sockets.
 In \ipi{} inout file we have
 \begin{lstlisting}[language=xml]
     <ffsocket mode='inet' name='cp2k'>
@@ -272,7 +273,6 @@ In \ipi{} inout file we have
 and in CP2K input file \url{cp2k.in} we have the following
 \begin{lstlisting}[language=xml]
 &MOTION
-
   &DRIVER
    HOST localhost
    PORT 20614
@@ -280,10 +280,10 @@ and in CP2K input file \url{cp2k.in} we have the following
 &END MOTION
 \end{lstlisting}
 The above means that an Internet domain socket with port number 20614 is used for the communication.
-The port number is an integer between 1 and 32277 used to distinguish between all the
-different sockets open on a particular host. As many of the lower numbers are protected
+The port number is an integer between 1 and 32767 used to distinguish between all the
+different sockets open on a particular host. As many of the lower numbers are reserved
 for use in important system processes or Internet communication, it is generally advisable
-to only use numbers in the range 1025-32277 for simulations.
+to only use numbers in the range 1025-32767 for simulations.
 
 \Question
 Now let's see whether the Internet domain socket can indeed connect.
@@ -292,19 +292,26 @@ Type the following to start \ipi{} and CP2K:
 $ i-pi input.xml &> log.ipi &
 $ cp2k.popt -o h2o.out cp2k.in &
 \end{lstlisting}
-Does it work?
+Does it work? If you have access to two computers that can communicate with each
+other on the same network, you can try to run in a distributed-computing mode,
+with i-PI running on one computer and CP2K on the other. This advanced mode of 
+operation, however, can be complex in the presence of firewalls or multiple 
+network interfaces (see the i-PI documentation for some examples). 
 
 \end{Exercise}
 
-\begin{Exercise}[label={basic},title={Benchmark of quantum effects in a water molecule}]
+\begin{Exercise}[label={water},title={Benchmark of quantum effects in a water molecule}]
 \noindent In this exercise we will perform a series of PIMD calculations to observe and benchmark nuclear quantum effects in a molecular system. Our system of choice will be a single molecule of water in vacuum so that simulations don't take too much time and memory. We will be sampling an NVT ensemble using a q-TIP4P forcefield implemented within Lammps. We will look at the change in the kinetic and potential energy and the Oxygen--Hydrogen pair distribution function as we simulate in the quantum regime.
 
 \Question
 Look at the \ipi{} input file in \url{n.01/input.xml}. It is an \ipi{} input for a molecular dynamics simulations. Observe the 
-properties and trajectory files that are specified in the \lstinxml$<output></output>$ section. From the previous exercise, it should be clear that the quantum kinetic and potential energy will be printed out every $4$ MD steps as columns $4$ and $5$ in the \lstinbash{$prefix.out} file. To compute the Oxygen--Hydrogen pair distribution function we shall also print out the positions of the atoms every $40$ MD steps int the \lstinbash{$prefix.pos_0} file.
+properties and trajectory files that are specified in the \lstinxml$<output></output>$ section. From the previous exercise, 
+it should be clear that the quantum kinetic and potential energy will be printed out every $4$ MD steps as columns $4$ and $5$ in the \lstinbash{$prefix.out} file. To compute the Oxygen--Hydrogen pair distribution function we shall also print out the positions of the atoms every $40$ MD steps int the \lstinbash{$prefix.pos_0} file.
 
 \Question
-Observe the \lstinxml$<initialize></initialize>$ section. We will be initialzing from a checkpoint file \lstinbash{start.chk} which is basically a RESTART file of an long equilibration run. From the previous exercise, it should be clear that the option \lstinbash{nbeads} should be $1$ for a classical simulation.
+Observe the \lstinxml$<initialize></initialize>$ section. We will be initialzing from a checkpoint file 
+\lstinbash{start.chk} which is basically a RESTART file of a long equilibration run. 
+From the previous exercise, it should be clear that the option \lstinbash{nbeads} should be $1$ for a classical simulation.
 
 \begin{lstlisting}[language=xml]
 <initialize nbeads='1'>  
@@ -313,28 +320,46 @@ Observe the \lstinxml$<initialize></initialize>$ section. We will be initialzing
 \end{lstlisting}
 
 \Question
-Observe the \lstinxml$<motion></motion>$ section. The tags within the section should be verbose enough to help you interpret their meaning. We will be using a ``pile\_l" thermostat which for the case of a classical simulation is a white noise Langevin thermostat. So that we are consistent with the rest of the PIMD runs, we will use an over-conservative time step of $0.25 fs$. 
+Observe the \lstinxml$<motion></motion>$ section. The tags within the section should be 
+verbose enough to help you interpret their meaning. We will be using a PILE-L thermostat~\cite{ceri+10jcp}
+ which for the case of a classical simulation reduces to a white noise Langevin thermostat. 
+To be consistent with the rest of the PIMD runs, we will use an over-conservative time step of $0.25$fs. 
 
 \Question
-To run the simulation launch \ipi{} and lammps in background. It is advisable to keep separate logs as useful information can be extracted from them.
+To run the simulation launch \ipi{} and lammps in background. It is advisable to keep separate 
+logs as useful information can be extracted from them.
 \begin{lstlisting}[language=bash]
 $ i-pi input.xml &> log.ipi &
 $ lmp_ubuntu < in.lmp &> log.lmp &
 \end{lstlisting}
 To compute the average values of the observable use the program called \url{autocorr} which takes a time series as an input and evaluates its auto-correlation function. In addition to that it also computes the average and the associated error. Assuming that \lstinbash{$prefix} is the prefix used in \ipi{} input \begin{lstlisting}[language=bash]
-$ awk '!/#/{ print $6}' $prefix.out | head | autocorr -maxlag 1
+$ awk '!/#/{ print $6}' $prefix.out | tail -n +100 | \
+       autocorr -maxlag 10 | head
 \end{lstlisting}
 
 \Question
 To compute the Oxygen--Hydrogen pair correlation function we suggest you to use \url{trajworks} and follow the syntax as shown. 
 \begin{lstlisting}[language=bash]
-$ cat $prefix.pos_0.pdb | trajworks -ipdb -vbox -gr -gr1 O -gr2 H -grmax 2 -hwin triangle -hwinfac 5  > gOO.data 
+$ cat $prefix.pos_0.pdb | trajworks -ipdb -vbox \ 
+      -gr -gr1 O -gr2 H -grmax 2 -grbins 200 -hwin triangle \
+      -hwinfac 2  > gOO.data 
 \end{lstlisting}
 
 \Question
-Now go back to the previous folder and then to folder called \lstinbash{n.32}. Try to run a PIMD simulation for $32$ beads. You will find an \lstinbash{init.chk} file, containing an already equilibrated geometry of the extended system of 32 replicas of our system. Copy the i-pi and lammps inputs from \lstinbash{n.01}.
+Now go one folder up, and create new folder, copying all the input files 
+for \lstinbash{n.01}. You can obtain an equilibrated 
+of the extended system of 32 replicas of our system from 
+\lstinbash{n.32/init.chk}.
+
+\begin{lstlisting}[language=bash]
+$ mkdir pi-test
+$ cp n.01/input.xml n.01/*.lmp pi-test
+$ cp n.32/init.chk pi-test
+$ cd pi-test
+\end{lstlisting}
 
 \Question
+Modify the input files so that you will run a PIMD calculation with 32 beads.
 Make the modifications as indicated by the comments in the xml snippet.
 \begin{lstlisting}[language=xml]
 <!-- change nbeads to 32--> 
@@ -351,7 +376,8 @@ Make the modifications as indicated by the comments in the xml snippet.
 \end{lstlisting}
 
 \Question
-Do not forget to change the address in the lammps input file. The comments in the following snippet should guide you.
+Do not forget to change the address in the lammps input file. 
+The comments in the following snippet should guide you.
 \begin{lstlisting}[language=sh]
 neighbor 2.0 bin
 timestep 0.00025
@@ -361,25 +387,28 @@ run 100000000
 \end{lstlisting}
 
 \Question
-Similarly go to folders \lstinbash{n.16, n.08, n.04} and \lstinbash{n.02} and launch PIMD simulations for number of beads indicated by the name of the folders.
+The folders \lstinbash{n.??} have already been prepared for you to run simulations with 
+increasing numbers of beads. You should start one PIMD calculation in each of those folders.
 Compute the pair correlation function and the energy for all the simulations using \url{autocorr} and \url{trajworks}.
 
 
 \Question
-If you prefer saving time you could use a scripts provided called \url{extract-pot.bash}, \url{extract-kin.bash} and \url{extract-gOH.bash} present in parent directory. These compute the potential energy, kinetic energy and the pair correlation function respectively. 
+If you are late and want to save some time you could use the scripts provided -- 
+called \url{extract-pot.bash}, \url{extract-kin.bash} and \url{extract-gOH.bash} 
+that are present in parent directory. These compute the potential energy, 
+kinetic energy and the pair correlation function respectively. 
 \begin{lstlisting}[language=bash]
-$ pwd
-/home/pimd/Desktop/PIMD TUTORIAL/day-1/ex-3
 $ ls *.bash  
 extract-gOH.bash extract-kin.bash extract-pot.bash
 \end{lstlisting}
 
 
 \Question
-Executing \url{extract-pot.bash} and \url{extract-kin.bash} will generate the average value and the error associated with the respective observable tabulated against the number of beads. The units and the reference values will be mentioned in the header. 
+Executing \url{extract-pot.bash} and \url{extract-kin.bash} will generate the average value and the error associated with the respective observable tabulated against the number of beads. What are the units? \hints{Have a look at the header of the output files 
+of \ipi{}. Unless otherwise specified, all outputs are in atomic units.}
 \begin{lstlisting}[language=bash]
 $ pwd
-/home/pimd/Desktop/PIMD TUTORIAL/day-1/ex-3
+tutoriap-pimd16/day-1/ex-3
 $ bash extract-pot.bash > pot.data
 $ cat pot.data
 #nbeads avg error
@@ -400,7 +429,7 @@ p 'pot.data' us 1:2:3 w errorl
 Executing \url{extract-gOH.bash} and \url{extract-kin.bash} will a file called gOH.data inside each of the sub directories \lstinbash{n.*}.
 \begin{lstlisting}[language=bash]
 $ pwd
-/home/pimd/Desktop/PIMD TUTORIAL/day-1/ex-3
+tutorial-pimd16/day-1/ex-3
 $ bash extract-gOH.bash
 $ ls */gOH.data  
 n.01/gOH.data n.02/gOH.data n.04/gOH.data n.08/gOH.data n.16/gOH.data n.32/gOH.data n.64/gOH.data
@@ -408,16 +437,31 @@ n.01/gOH.data n.02/gOH.data n.04/gOH.data n.08/gOH.data n.16/gOH.data n.32/gOH.d
 We suggest you to plot each of the pair distribution functions and see how they converge with number of beads. Launch \url{gnuplot} and type the following to
 
 \begin{lstlisting}[language=bash]
-p 'n.01/gOH.data' us 1:2 w l, 'n.02/gOH.data' us 1:2 w l, 'n.04/gOH.data' us 1:2 w l, 'n.08/gOH.data' us 1:2 w l, 'n.16/gOH.data' us 1:2 w l, 'n.32/gOH.data' us 1:2 w l, 'n.64/gOH.data' us 1:2 w l
+> p 'n.01/gOH.data' u 1:2 w l, 'n.02/gOH.data' u 1:2 w l,\
+    'n.04/gOH.data' u 1:2 w l, 'n.08/gOH.data' u 1:2 w l,\
+    'n.16/gOH.data' u 1:2 w l, 'n.32/gOH.data' u 1:2 w l,\
+    'n.64/gOH.data' u 1:2 w l
 \end{lstlisting}
 
 \end{Exercise}
 
-\begin{Exercise}[label={basic},title={PIMD in the strong quantum regime:  gas phase Methanium}]
-\noindent Having benchmarked nuclear quantum effects in a water molecule we will study a $\text{CH}_{5}^{+}$ at 100 K where quantum effects such as tunneling and zero point fluctuations become strong. For a water molecule at 300 K $~ 32 beads$ were sufficient to accommodate NQEs, however in this case we will use $128$ beads since at low temperature quantum effects are stronger. In other words, this simulation is $128$ times more computationally demanding than a MD. We shall be sampling a $NVT$ ensemble and will look the proton delocalization by computing the Hydrogen--Hydrogen pair distribution function. For the purpose of comparison we will also run a cheap MD.
+\begin{Exercise}[label={ch5},title={PIMD in the strong quantum regime:  gas phase Methanium}]
+\noindent Having benchmarked nuclear quantum effects in a water molecule at room temperature 
+we will study a $\text{CH}_{5}^{+}$ at 100 K where quantum effects such as tunneling and 
+zero point fluctuations become strong. For a water molecule at $300$K, $\approx$32 beads were 
+sufficient to accommodate NQEs, however in this case we will use $128$ beads since at low 
+temperature quantum effects are stronger \hints{(Remember: the error in primitive PIMD
+converges as $(T/P)^2$)}. In other words, this simulation is $128$ times more computationally 
+demanding than classical MD. We shall be sampling a \emph{NVT} ensemble and will monitor the 
+proton delocalization by computing the Hydrogen--Hydrogen pair distribution function. For the 
+purpose of comparison we will also run a cheap MD.
 
 \Question
-Move to the directory \url{ex-4/} and carefully observe the\ipi{} input files \url{n.001/input.xml} \url{n.128/input.xml}. You will be initializing form an already thermalized restart file called \url{init.chk}. We shall also be printing out the trajectory every $1 fs$ so that we have enough statistics to compute the Hydrogen--Hydrogen pair distribution function. Run the classical and quantum simulations in their respective directories.
+Move to the directory \url{ex-4/} and carefully observe the \ipi{} input files \url{n.001/input.xml} 
+and \url{n.128/input.xml}. You will be initializing from an already thermalized restart file called 
+\url{init.chk}. We shall also be printing out the trajectory every $1$fs so that we have enough 
+statistics to compute the Hydrogen--Hydrogen pair distribution function. Run the classical and 
+quantum simulations in their respective directories.
 
 \begin{lstlisting}[language=bash]
 $ i-pi input.xml &> log.ipi &
@@ -427,13 +471,15 @@ $ cp2k.popt < in.cp2k &> log.cp2k &
 \Question
 To compute the Hydrogen--Hydrogen pair correlation function we suggest you to use \url{trajworks} and follow the syntax as shown. 
 \begin{lstlisting}[language=bash]
-$ cat $prefix.pos_* | trajworks -ipdb -vbox -gr -gr1 H -gr2 H -grmax 3 -hwin triangle -hwinfac 5  > gHH.data 
+$ cat $prefix.pos_* | trajworks -ipdb -vbox -gr -gr1 H\
+ -gr2 H -grmax 3 -hwin triangle -hwinfac 5  > gHH.data 
 \end{lstlisting}
 
 \Question
-You can use \url{gnuplot} to observe the difference int he pair distributions functions with and without PIMD. Launch gnuplot by typing \url{gnuplot} on the terminal and execute the following statement 
+You can use \url{gnuplot} to observe the difference int the pair distributions functions with and without PIMD. 
+Launch gnuplot by typing \url{gnuplot} on the terminal and execute the following statement 
 \begin{lstlisting}[language=bash]
-p 'n.128/gHH.data' us 1:2 w l, 'n.001/gHH.data' us 1:2 w l
+> p 'n.128/gHH.data' u 1:2 w l, 'n.001/gHH.data' u 1:2 w l
 \end{lstlisting}
 
 \end{Exercise}

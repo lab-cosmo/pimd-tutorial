@@ -12,8 +12,6 @@ pair_coeff  1  1  0.000295147 5.96946
 
 neighbor	2.0 bin
 
-timestep	0.00025
-
 fix 1 all ipi 300K-G.0 32345 unix
 run		100000000
 

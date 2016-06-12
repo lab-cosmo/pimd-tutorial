@@ -1,6 +1,7 @@
 .PHONY: all clean
 
 all: day-1.pdf day-2.pdf day-3.pdf
+	cp day-?.pdf ../
 
 clean:
 	rm -f *.aux *.bbl *.log *.blg
