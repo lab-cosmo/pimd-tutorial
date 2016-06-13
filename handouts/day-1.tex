@@ -341,11 +341,11 @@ $ awk "!/#/{ print $6}" $prefix.out | tail -n +100 | \
 \Question
 To compute the Oxygen--Hydrogen pair correlation function we suggest you to use \url{trajworks} and follow the syntax as shown.
 \begin{lstlisting}[language=bash]
-$ cat $prefix.pos_0.pdb | trajworks -ipdb -vbox \ 
+$ cat $prefix.pos_0.xyz | trajworks -ixyz -box boxfile \ 
  -gr -gr1 O -gr2 H -grmax 2 -grbins 200 -hwin triangle \
- -hwinfac 2 > gOO.data 
+ -hwinfac 2 > gOH.data 
 \end{lstlisting}
-The \url{-gr} flag activates the computation of a pair correlation for atom types given by \url{-gr1} and \url{-gr2} until a maximum distance given by \url{grmax} with a resolution given by \url{-grbins} grid points. The flags \url{-hwin} and \url{-hwinfac} indicate smoothening options.
+The \url{-gr} flag activates the computation of a pair correlation for atom types given by \url{-gr1} and \url{-gr2} until a maximum distance given by \url{-grmax} with a resolution given by \url{-grbins} grid points. The flags \url{-hwin} and \url{-hwinfac} indicate smoothening options.
 
 \Question
 Now go one folder up, and create new folder, copying all the input files 
