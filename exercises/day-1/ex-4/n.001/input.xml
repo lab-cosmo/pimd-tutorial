@@ -6,7 +6,7 @@
    <output prefix="simulation">
       <properties stride="4" filename="out"> [ step, time{femtosecond}, conserved, temperature, kinetic_cv, 
             potential, kinetic_cv(H), kinetic_cv(C) ] </properties>
-      <trajectory filename="pos" format="pdb" stride="4"> positions </trajectory>
+      <trajectory filename="pos" format="pdb" stride="4" cell_units="angstrom"> positions{angstrom} </trajectory>
    </output>
    <prng>
       <seed>18885</seed>
