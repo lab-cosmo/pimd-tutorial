@@ -1,10 +1,7 @@
 <simulation verbosity='high'>
    <total_steps>800000</total_steps>
    <output prefix=''>
-      <properties filename='gas-nvt-300k.out' shape='(6)'>
-       [ step, time{picosecond}, conserved, temperature{kelvin}, potential, 
-         pressure_cv{atmosphere} ]
-      </properties>
+      <properties filename='gas-nvt-300k.out' shape='(5)'> [ step, time{picosecond}, conserved, temperature{kelvin}, potential ] </properties>
       <trajectory filename='gas-nvt-300k.xc'>x_centroid{angstrom}</trajectory>
       <checkpoint stride='100' filename='gas-nvt-300k.chk'>0</checkpoint>
    </output>
@@ -143,6 +140,7 @@
    </prng>
    <ffsocket name='cp2k'>
       <timeout>  6.00000000e+02</timeout>
+      <address>cosmopc4.epfl.ch</address>
       <port>20614</port>
    </ffsocket>
    <system>
