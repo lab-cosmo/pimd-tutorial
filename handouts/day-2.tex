@@ -109,6 +109,7 @@ $ trajworks -ipdb -vbox -fstart 10 -gr -gr1 O -gr2 O \
         -grmax 5 -grbins 250 -hwin triangle -hwinfac 2 \
          < base_p-32.pos_00.pdb > gOO.dat
 \end{lstlisting}%$
+Also compute the O--H radial distribution function.
 
 \end{Exercise}
 
@@ -173,7 +174,7 @@ that the barostat (a kind of a Langevin piston~\cite{buss+09jcp}, adapted
 to PIMD~\cite{ceri+14cpc}) contains a separate  \lstinxml$<thermostat>$.
 You should not touch this, or at least make sure you keep a classical thermostat,
 since the degrees of freedom of the cell cannot be thermostatted with a 
-GLE (why? think of how the GLE infers the fluctuations from the time
+quantum GLE (why? think of how the GLE infers the fluctuations from the time
 scale of oscillations, and how the time scale of the cell dynamics is an
 arbitrary parameter).}
 
