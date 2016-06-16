@@ -334,7 +334,7 @@ $ i-pi input.xml &> log.ipi &
 $ lmp_ubuntu < in.lmp &> log.lmp &
 \end{lstlisting}
 To compute the average values of the observable use the program called \url{autocorr} which takes a time series as an input and evaluates its auto-correlation function. It requires a mandatory flag called \url{-maxlag} which is the cutoff at the auto-correlation function is truncated. In addition to that it also computes the average and the associated error. Assuming that \lstinbash{$prefix} is the prefix used in \ipi{} input \begin{lstlisting}[language=bash]
-$ awk "!/#/{ print $6}" $prefix.out | tail -n +100 | \
+$ awk '!/#/{ print $6}' $prefix.out | tail -n +100 | \
  autocorr -maxlag 10 | head
 \end{lstlisting}
 
@@ -469,7 +469,7 @@ quantum simulations in their respective directories.
 
 \begin{lstlisting}[language=bash]
 $ i-pi input.xml &> log.ipi &
-$ cp2k.popt < in.cp2k &> log.cp2k &
+$ cp2k.popt in.cp2k &> log.cp2k &
 \end{lstlisting}
 
 \Question
