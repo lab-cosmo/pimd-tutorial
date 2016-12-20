@@ -1,12 +1,12 @@
 <simulation verbosity='medium'>
-  <output prefix='npt-ice'>
+  <output prefix='example'>
     <properties stride='20' filename='out'>  [ step, time{picosecond}, conserved{electronvolt}, temperature{kelvin}, kinetic_cv{electronvolt}, potential{electronvolt}, pressure_cv{megapascal}, volume, cell_h] </properties>
     <trajectory stride='20' filename='xc' format='xyz' cell_units='angstrom'> x_centroid{angstrom}</trajectory>
     <trajectory stride='20' filename='pos' format='xyz' cell_units='angstrom'> positions{angstrom}</trajectory>
   </output>
   <total_steps>50000</total_steps>
   <ffsocket name='force-provider' mode='unix'>
-    <address>e3-1</address>
+    <address>ex3-1</address>
   </ffsocket>
   <system>
     <initialize nbeads='6'>
@@ -16,11 +16,11 @@
     <forces><force forcefield='force-provider'/></forces>
     <ensemble>
       <temperature units='kelvin'> 200 </temperature>
-      <pressure units='megapascal'> 10 </pressure>
+      <stress units='megapascal'> [10, 0, 0, 0, 10, 0, 0, 0, 10] </stress>
     </ensemble>
     <motion mode='dynamics'>
-      <dynamics mode='npt'>
-        <barostat mode='isotropic'>
+      <dynamics mode='nst'>
+        <barostat mode='anisotropic'>
           <tau units='femtosecond'> 200</tau>
           <thermostat mode='langevin'>
             <tau units='femtosecond'> 100</tau>
