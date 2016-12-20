@@ -14,14 +14,15 @@
 In this set of exercises we will learn about the basics of \ipi\ and
 its use jointly with \qe.  
 
-As may be already clear, \ipi\ is not meant to compute forces then an
-external engine is needed. Once the external engine is set, \ipi\ will
-integrate the MD trajectory. This approach is extremely flexible. For
-example different kind of forces can be mixed within
-\ipi\ permitting the computation of QM forces and correcting terms from
-different software (\PWscf\ + external dispersion correction) or
-multiple time step approaches with expansive/cheap forces computations
-(see the Ring Polymer Contraction method). 
+As may be already clear, \ipi\ is not meant to compute forces. Thus,
+an external engine is needed. Once the external engine is set, \ipi\
+will take care of the generation of the MD trajectory. This approach
+is extremely flexible. For example different kind of forces can be
+mixed within \ipi\ permitting the use of forces coming from different
+sources: correcting terms from different software (\PWscf~+ external
+dispersion correction) or multiple time step approaches with
+expansive/cheap forces computations (see the Ring Polymer Contraction
+method).
 
 \begin{figure}[h!]
 \centering
@@ -65,24 +66,25 @@ pw.x --ipi host:port < pw.in
 The forces are then computed by \pwx\ at the level specified in the
 input and passed to \ipi\ thought the socket interface.
 
-\Question
-Open the \ipi\ input file \url{ex-1/ipi.xml}. It is essential to
-specify in the input which is the address where \ipi\ will wait for a
-\pwx\ instance connecting. You have two possibilities: using a UNIX-domain
+\Question 
+Open the \ipi\ input file \url{ex-1/ipi.xml}. Specifying in
+the input which is the address of the socket where \ipi\ will wait for a \pwx\
+instance is essential. You have two possibilities: using a UNIX-domain
 or an INET-domain socket. The former is faster but the server and the
 client must run on the same machine. The latter allows communications
 going through the ``INTERNET'' so that \ipi\ and the ``force
-calculator'' can run on different computer. 
+calculator'' can run on different computer.
 
-The following section tells \ipi\ to wait for connection on the UNIX
-socket called \texttt{single-water-qe}:
+The following steps tell \ipi\ to wait for connection on the UNIX
+socket called \texttt{single-water-qe}. Look for the following snippet
+in the \url{ex-1/ipi.xml}:
 \begin{lstlisting}[language=xml]
 <ffsocket name="..." mode="unix">
 <address>...</address>
 </ffsocket>
 \end{lstlisting}
-Edit the \url{ex-1/ipi.xml} file replacing the dots in the snippet
-above with appropriate value. Any string would be fine but, if you
+Edit the file replacing the dots with appropriate values. Any string
+would be fine but, if you 
 want to be consistent with the rest of the tutorial, you should use
 the following:
 \begin{table}[h!]
@@ -100,7 +102,8 @@ double-quotes!}\\
 
 The \texttt{name} attribute in the \texttt{ffsocket} node assign a
 reference to the forcefield within the \ipi\ input. This reference
-will be used to specify the origin of the force within a ``system''.
+will be used to specify the origin of the force within the
+\texttt{system} node.
 
 \Question
 Introduce a \texttt{<force>} node that references to the
@@ -138,8 +141,8 @@ Created unix socket with address single-water-qe
 this means that the server started correctly and is waiting for a
 client able to compute forces.
 
-To start \pwx\ as an \ipi client open a new terminal, go to the path
-where all the files are and create a new directory. Enter the just
+To start \pwx\ as an \ipi\ client open a new terminal, enter the
+folder \url{ex-1} and create a new directory. Enter the just
 created folder and run the
 following command after replacing the \texttt{unix\_address} with the
 actual address where \ipi\ is waiting (if followed tutorial
@@ -149,8 +152,9 @@ pw.x --ipi unix_address:UNIX < pw.in
 \end{lstlisting}
 
 
-\Question Now switch to the terminal where \ipi\ is running, notice
-that \ipi\ has built the connection with LAMMPS with the message
+\Question 
+Now switch to the terminal where \ipi\ is running, notice
+that \ipi\ has built the connection with \pwx:
 \begin{lstlisting}[language=sh]
  @SOCKET:   Client asked for connection from . Now hand-shaking.
  @SOCKET:   Handshaking was successful. Added to the client list.
@@ -181,7 +185,7 @@ unexpectedly.
 Checking the \texttt{<initialization>} node in the \ipi\ input, we see
 the attribute \texttt{nbeads=4}. This means that we are running a Path
 Integral Molecular Dynamics (PIMD) simulation with 4 beads. Easy, isn't it?. 
-This explain why \ipi\ is producing so many xyz file as output. There
+This explain why \ipi\ is producing so many xyz files as output. There
 is an output for each bead and a fifth file containing the trajectory
 of the centroid. You can open them all together with the following
 command:
@@ -211,19 +215,19 @@ Try to focus also on the \texttt{<output>} node and understand why
 When you are tired of looking at a single molecule of water, go to the
 next exercise. 
 
-MD simulation are quite computationally expensive and performing
+MD simulations are quite computationally expensive and performing
 simulation with \emph{ab-initio} force evaluation would require much
 more time than what you can afford during this tutorial. This is why,
 from now on, the code LAMMPS will be used instead of \qe\. All the
-input for \qe\ will anyway be present in the exercise directory.
+input for \qe\ will anyway be present in the exercise \texttt{run} folders.
 
 \vspace{2em}
 
 \begin{Exercise}[label={inputs},title={Liquid water with the
     \emph{PIGLET} thermostat}]
-In this exercise you are going to learn how easy is to run a PIMD
+In this exercise you are going to learn how to perform a PIMD
 simulation using the PIGLET thermostat to improve the efficiency of
-the statistics.
+the sampling.
 
 \Question
 Open the \ipi\ input file at \url{ex-2/ipi.xml} and localize the node
@@ -243,15 +247,16 @@ To obtain the right parameters do the following:
 \end{enumerate}
 In this context, the \texttt{Ns} are the number of free degrees in the
 thermostat, $\omega_{max}$ and \texttt{centroid} are the maximum
-frequency and the window for which the sampling is
+and the window frequencies for which the sampling is
 enhanced. \textbf{Target T} is the temperature of the simulation and
 $\hbar\omega/KT$ is the ratio between vibrational energy and average
 kinetic energy.
 
-Once you have obtained the input code, do a copy of the file and call
-it \url{ex-2/piglet.xml}. Replace the code obtained from the website
-with the langevin thermostat (all the \texttt{thermostat} node must be
-substituted).
+Before proceeding further, do a copy of the entire directory
+\url{ex-2} and call it \url{ex-2-piglet}. Enter this latter and
+replace the langevin thermostat (all the \texttt{thermostat} node must
+be substituted) into the file \url{ex-2-piglet/ipi.xml} with the code
+obtained from the website.
 
 \Question
 Change the \texttt{verbosity} value from \texttt{medium} to
@@ -259,7 +264,7 @@ Change the \texttt{verbosity} value from \texttt{medium} to
 \begin{lstlisting}[language=bash]
 i-pi ipi.xml
 \end{lstlisting}
-from the \url{ex-2} folder. 
+from the \url{ex-2-piglet} folder. 
 
 At this point you have two choices for the force provider: you start
 \PWscf\ or LAMMPS. Since this simulation contains 96 atoms, we warmly
@@ -267,7 +272,10 @@ suggests using LAMMPS in this test running the following command:
 \begin{lstlisting}[language=bash]
 lmp_serial -i in.water 
 \end{lstlisting}
-in a different shell.
+in a different shell. While the simulation is running, in order to
+understand better the \ipi\ machinery, you could prepare a \pwx\ input
+for this example starting from the \pwx\ input provided in the folder
+\url{ex-1/pw.in}. Try also to run it with \ipi\ to be sure it's working.
 
 What are the lines inside the LAMMPS input which set the communication
 with \ipi ?
@@ -283,15 +291,20 @@ The shell should still present you the prompt. Run the same command a
 second time replacing the last ``1'' with a ``2''. What is happening
 in the \ipi\ terminal? You can see that now \ipi\ prints out much more
 information. Can you understand what they are? How many instances of
-LAMMPS could be used to improve the performances?
+LAMMPS could be used to maximize the performances?
 
 \end{Exercise}
 
 With this second exercise we performed a much more interesting
 simulation using some advanced method to increase the efficiency of
 the PIMD statistical sampling. Before moving to the next exercise, we
-strongly suggest to run the same dynamics using the langevin
-thermostat. At this point, you should know \ipi\ well enough to
+strongly suggest to run the same dynamics using the langevin thermostat and a
+single bead (classical dynamics).
+Let both run while working on the next exercise. We
+will come back to these at the end of the tutorial to analyze some
+result. 
+
+At this point, you should know \ipi\ well enough to
 proceed with the next simulation without much help. Pay attention to
 the fact that only one \ipi\ instance can use a given socket at
 time. If you want to run two \ipi\ server at the same time, make sure
@@ -311,7 +324,7 @@ in a valid input for a PIMD-NPT simulation.
 Take a look at the input provided and identify the nodes responsible
 for the task \ipi\ will perform.
 \texttt{motion} is the most important node in this sense.
-Look at he following snippet:
+Look at the following snippet:
 \begin{lstlisting}[language=xml]
 <motion mode='dynamics'>
 <dynamics mode='nvt'>
@@ -351,25 +364,52 @@ which is suitable for this case.
 <h0> [ 25.6156, 0, 0, 0, 29.5783, 0, 0, 0, 27.8867 ]</h0>
 </barostat>
 \end{lstlisting}
-Where is the place for this node? The barostat is property of the
-dynamics itself. Then it must be specified within that node. Copy the
-snippet above just before the \texttt{<timestep>} node.
+Where is the place for this node? The \texttt{barostat} is a
+characteristic of the \texttt{dynamics} itself. Then it must be
+specified within that node. Copy the snippet above just before the
+\texttt{<timestep>} node.
       
 \Question
 What does the list \texttt{h0} contains? Why do we need a thermostat
 within the barostat? 
 
-The list of number is a reference cell for the Parrinello-Rahman
+The list of numbers is a reference cell for the Parrinello-Rahman
 barostat (which is the one implemented in \ipi). In practice, those
-number are the dimension of the cell that must be written into the xyz
-input file (\url{ex3-1/init.xml}) or in the pdb file (take as an
+numbers are the dimension of the cell that must be written into the xyz
+input file (\url{ex3-1/init.xyz}) or in the pdb file (take as an
 example the one at \url{ex1/h2o-init.pdb}). The coordinate files
-contains also the units of length for the cell
-(\texttt{cell{angstrom}}) and (\texttt{position{angstrom}}).
+contains also the units of length for the cell and the positions
+(\texttt{cell\{angstrom\}} and \texttt{position\{angstrom\}}).
 
 \Question
 Following the same command used in the last exercise, start this
 simulation.
+
+\end{Exercise}
+
+\begin{Exercise}[label={inputs},title={Radial distribution function comparison}]
+As a last exercise, you should compare the radial distribution
+function obtained from the two simulation of exercise 2.
+
+\Question
+Compute radial distribution functions for the different simulations. You
+can use any tool of your liking, but we suggest the \url{trajworks} 
+post-processing tool that is part of the \url{toolbox} library.
+Run the following command in the two folders used during the exercise
+2: \url{ex-2} and \url{ex-2-piglet}.
+\begin{lstlisting}[language=bash]
+trajworks -ixyz -vbox -fstart 10 -gr -gr1 O -gr2 O \
+        -grmax 5 -grbins 250 -hwin triangle -hwinfac 2 \
+         < example-xc.xyz > gOO.dat
+\end{lstlisting}
+
+To visualize the result you can use the \texttt{plot} command from
+\url{ex-2-piglet} folder:
+\begin{lstlisting}[language=bash]
+plot gOO.dat ../ex-2/gOO.dat -1,2
+\end{lstlisting}
+Also compute the O--H radial distribution function.
+Do you see any difference? Can you explain why?
 
 \end{Exercise}
 
