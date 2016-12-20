@@ -1,0 +1,378 @@
+\documentclass[10pt]{beamer}
+\usepackage{pgfpages}
+
+%% FOR DRAFT: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Comment the first line and uncomment the next lines:
+%\documentclass[draft,10pt]{beamer}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% FOR HANDOUT: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Comment the first line and uncomment the next lines:
+% \documentclass[handout,10pt]{beamer}
+% \usepackage{pgfpages}
+% \pgfpagesuselayout{2 on 1}[a4paper,border shrink=5mm]
+%% The previous line set 2 slide on 1 paper, if you change the number,
+%% you can change the slide for sheet.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% This file is a solution template for:
+
+% - Talk at a conference/colloquium.
+% - Talk length is about 20min.
+% - Style is ornate.
+
+\mode<presentation>
+{
+  \usetheme{Hannover}
+%  \usecolortheme{rose}
+  \usecolortheme{default}
+  \setbeamercovered{transparent}
+}
+\usepackage[absolute,overlay]{textpos}
+
+\usepackage{etex}
+%\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hanging}
+
+\usepackage{multimedia}
+%\usepackage{movie15}
+%\usepackage{flashmovie}
+
+%%%%%%% Other Packages %%%%%%%
+
+% To include image
+%\usepackage{graphics} %Gia introdotto da beamer
+%----------------------
+
+% To draw
+\usepackage{tikz}
+%--- tikz libraries
+\usetikzlibrary{arrows}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{shapes}
+\usetikzlibrary{mindmap}
+\usetikzlibrary{er}
+\usetikzlibrary{shadows}
+%--- tikz colordef
+\definecolor{bluepres}{RGB}{215,215,240}
+\definecolor{bluebold}{RGB}{51,51,179}
+\definecolor{red}{RGB}{245,10,39}
+%----------------------
+
+% Nice Boxex
+\usepackage{fancybox}
+%----------------------
+
+% Chemical Pacages
+%\usepackage{m-ch-en}
+%\usepackage{m-pictex}
+%----------------------
+
+% For Comment Environment
+\usepackage{verbatim}
+%\usepackage{gnuplottex}
+
+%----------------------
+
+% To improve my tables
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+%\usepackage{colortbl}
+%----------------------
+
+% To improve my itemize
+%\usepackage{enumitem}
+%\setlist{nolistsep,leftmargin=*}
+%----------------------
+
+% For a better style
+%\usepackage{microtype}
+%----------------------
+
+% To edit the linespread
+%\usepackage{setspace}
+%----------------------
+
+%\begin{comment}
+%For measure unit (SI)
+%\usepackage [squaren,italian,textstyle,thinqspace,thickspace]{SIunits}
+%----------------------
+
+%For Math tools
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+
+%----------------------
+
+
+\usepackage{xparse}
+\ExplSyntaxOn
+\DeclareExpandableDocumentCommand{\convertlen}{ O{cm} m }
+ {
+  \dim_to_decimal_in_unit:nn { #2 } { 1 #1 } cm
+ }
+\ExplSyntaxOff
+
+\usepackage[style=chem-acs]{biblatex}
+%\usepackage[style=authoryear-comp, backend=biber]{biblatex}
+\addbibresource{library.bib}
+\renewcommand*{\footnotesize}{\scriptsize}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% My Own Command %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%
+% abbreviations for text
+%------------------------------
+\newcommand{\eng  }[1]{\emph{#1}}
+\newcommand{\soft }[1]{\emph{#1}}
+%\newcommand{\sep }[1]{\; #1 \;}
+%\newcommand{\soft}[1]{\MakeUppercase{#1}}
+
+%
+% abbreviations for mathmatics
+%------------------------------
+\newcommand{\pd       }[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\mtx      }[1]{\underline{#1}}
+\newcommand{\diver    }[1]{\vnabla \scaltimes #1}
+\newcommand{\vnabla   }   {\vec{\nabla}}
+\newcommand{\scaltimes}   {\cdot}
+\newcommand{\lapl     }[1]{\vnabla^2 #1}
+\newcommand{\trasp    }[1]{{#1}^T}
+\newcommand{\is       }[1]{{#1}'}
+\newcommand{\phs      }[1]{\overline{#1}}
+\newcommand{\e        }   {\mathrm{e}}                       % Nepero's numeber
+\newcommand{\intd     }   {\,\mathrm{d}}                     % Integration variable
+
+
+%
+% abbreviations for enviroments
+%------------------------------
+\newcommand{\bec}{\begin{center}}
+\newcommand{\enc}{\end{center}}
+\newcommand{\ber}{\begin{flushright}}
+\newcommand{\enr}{\end{flushright}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bit}{\begin{itemize}}
+\newcommand{\eit}{\end{itemize}}
+
+%
+% abbreviations for chemistry
+%------------------------------
+\newcommand{\ch}[1]{\chemical{#1}}
+
+%
+% abbreviations for tikz shape
+%------------------------------
+\newcommand{\hence}[3]{  % freccia larga si specifica la larghezza,
+                         % lunghezza e i gradi di rotazione.
+  \bec
+  \tikz{\node[single arrow,draw=bluebold,thick,rotate=#3,minimum
+    width=#1,minimum height=#2,fill=bluepres!94]{};}
+  \enc
+}
+
+\newcommand{\textarrow}{
+  \tikz[baseline]{
+    \draw[->,shorten >=1pt,>=stealth,thick]
+    (0,.5ex) -- ++(8mm,0);}
+}
+
+\newcommand{\uptextarrow}[1]{
+  \tikz[baseline=0.1ex]{
+    \draw[->,shorten >=1pt,>=stealth,thick,rotate=90]
+    (0,0ex) -- ++(#1,0);}
+}
+
+\newcommand{\downtextarrow}[1]{
+  \tikz[baseline=-1.5ex]{
+    \draw[->,shorten >=1pt,>=stealth,thick,rotate=-90]
+    (0,0ex) -- ++(#1,0);}
+}
+
+
+%
+% my environments
+%------------------------------
+
+\newcommand{\myitem}[1]
+{
+  \begin{footnotesize}
+    \begin{tikzpicture}[baseline,inner sep=0]
+      \node[circle,minimum width=1ex,draw=bluebold,shading=ball,/tikz/ball color=bluebold] at (0,0){};
+      \draw (0ex,0ex)
+      node[right,text width=0.9\textwidth,rounded corners,draw=bluebold,fill=bluepres!94,inner sep=1ex]
+      {#1};
+    \end{tikzpicture}
+  \end{footnotesize}
+}
+
+\newcommand{\myalertitem}[1]
+{
+  \begin{footnotesize}
+    \begin{tikzpicture}[baseline,inner sep=0]
+      \node[circle,minimum width=1ex,draw=red,shading=ball,/tikz/ball color=red] at (0,0){};
+      \draw (0ex,0ex)
+      node[right,text width=0.9\textwidth,rounded corners,draw=red,fill=red!40,inner sep=1ex]
+      {#1};
+    \end{tikzpicture}
+  \end{footnotesize}
+}
+
+\newcommand{\myblock}[1]
+{
+  \begin{footnotesize}
+    \begin{tikzpicture}[baseline,inner sep=0]
+%      \node[circle,minimum width=1ex,draw=bluebold,fill=bluebold] at (0,0){};
+      \draw (0ex,0ex)
+      node[right,text width=0.9\textwidth,rounded
+      corners,draw=bluebold,fill=bluepres!94,inner sep=1ex,text centered]
+      {#1};
+    \end{tikzpicture}
+  \end{footnotesize}
+}
+
+\newcommand{\mywhiteblock}[1]
+{
+  \begin{footnotesize}
+    \begin{tikzpicture}[baseline,inner sep=0]
+%      \node[circle,minimum width=1ex,draw=bluebold,fill=bluebold] at (0,0){};
+      \draw (0ex,0ex)
+      node[right,text width=0.9\textwidth,rounded
+      corners,draw=bluebold,fill=white,inner sep=1ex,text centered]
+      {#1};
+    \end{tikzpicture}
+  \end{footnotesize}
+}
+
+\newcommand{\myalertblock}[1]
+{
+  \begin{footnotesize}
+    \begin{tikzpicture}[baseline,inner sep=0]
+      \node[circle,minimum width=1ex,draw=red,shading=ball,/tikz/ball color=red] at (0,0){};
+      \node[circle,minimum width=1ex,draw=red,shading=ball,/tikz/ball color=red] at (9.5,0){};
+      \draw (0ex,0ex)
+      node[right,text width=0.9\textwidth,rounded
+      corners,draw=red,fill=red!15,inner sep=1ex, text centered]
+      {#1};
+    \end{tikzpicture}
+  \end{footnotesize}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\graphicspath{{../img/}}
+
+\title[] % (optional, use only
+                                % with long paper titles)
+{Short i-PI tutorial}
+
+%\logo{\inlcudegraphics[width=10cm]{LCMD-logo}}
+\institute{
+%  \vspace{0.4cm}\\
+%  \includegraphics[width=6cm]{EPFL-logo} \\
+% \vspace{2ex}
+% \textbf{\large{LCMD - EPFL}}\\
+% \vspace{1ex}
+%  Corso di Laurea Magistrale in Scienze Chimiche
+% \vspace{1cm}
+\begin{tabular}{cc}
+%  \hline
+%  \vspace{-0.1cm}
+  \raisebox{0.03cm}{\includegraphics[width=0.3\textwidth]{general/group-logo}} &
+  \includegraphics[width=0.4\textwidth]{general/EPFL-logo-notext}
+\end{tabular}\\
+\vspace{1em}
+
+ICTP Trieste 
+}
+
+\date[26.01.2017]
+{Riccardo Petraglia\\
+26 January 2017}
+
+\subject{Theoretical Computer Science}
+
+%% Per Vedere l'indice all'inizio di ogni sezione
+% \AtBeginSubsection[]
+% {
+%   \begin{frame}<beamer>{Outline}
+%     \tableofcontents[currentsection,currentsubsection]
+%   \end{frame}
+% }
+
+% \AtBeginSection[]
+% {
+%   \begin{frame}<beamer>{Outline}
+%     \tableofcontents[currentsection,currentsubsection]
+%   \end{frame}
+% }
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command:
+%\beamerdefaultoverlayspecification{<+->}
+
+%\setbeameroption{show notes on second screen=left}
+%\setbeameroption{show only notes}
+%\setbeamercolor{note page}{bg=white, fg=black}
+
+\newcommand{\unilogo}{
+  \setlength{\TPHorizModule}{1pt}
+  \setlength{\TPVertModule}{1pt}
+   % textblock{}{x,y}: pos(x) = leftUpperCorner + (x * \TPHorizModule), pos(y) = leftUpperCorner - (y * \TPVertModule)
+  \begin{textblock}{1}(1,250)
+   \includegraphics[width=1.5cm]{general/EPFL-logo}
+  \end{textblock}
+  \begin{textblock}{1}(1.5,8)
+   \includegraphics[width=1.5cm]{general/group-logo}
+  \end{textblock}
+  }
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{\unilogo}
+%\end{comment}
+
+\begin{document}
+%\logo{\includegraphics[width=10cm]{LCMD_logo}}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\note{
+Buonpomeriggio, I'm Riccardo Petraglia. My master thesis is on
+simulations of molecules constituent heparin.
+}
+
+% \begin{frame}{Outline}
+%   \unilogo
+%   \tableofcontents[pausesections]
+% % You might wish to add the option [pausesections]
+% \end{frame}
+
+% \note{
+% My talk provides a brief introduction on the importance and on features of
+% heparin, after that, I will describe the approach used for simulations
+% and then I will show results obtained  and connections between
+% simulation results and experimental data. Finally, I will propose some
+% possible insights of this work.
+% }
+
+\input{[PRES]-intro}
+
+
+% \section{test}
+% \begin{frame}{dDMC}
+% asd\footfullcite{Petraglia2013}
+% {\tiny asdasd}
+% \end{frame}
+
+\end{document}

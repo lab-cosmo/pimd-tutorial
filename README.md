@@ -1,4 +1,4 @@
-Support files for a PIMD Tutorial
+Support files for an i-PI Tutorial
 =================================
 
 This repository contains support files as well as the LaTeX sources

@@ -1,15 +1,19 @@
 .PHONY: all clean
 
-all: day-1.pdf day-2.pdf day-3.pdf
-	cp day-?.pdf ../
+all: handout.pdf 
+	cp handout.pdf ../
 
 clean:
 	rm -f *.aux *.bbl *.log *.blg
 
+distclean:
+	clean
+	rm -r handout.pdf
+
 %.aux : %.tex 
 	pdflatex $*
 
-%.pdf : %.tex %.bbl
+%.pdf : %.tex %.bbl style.tex
 	while (pdflatex $* ; \
 	grep -q "Rerun to get cross" $*.log ) do true ; \
 	done
