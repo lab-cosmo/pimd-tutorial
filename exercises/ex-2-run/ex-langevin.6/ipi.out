@@ -1,0 +1,154 @@
+
+ ____       ____       ____       ____
+/    \     /    \     /    \     /    \ 
+|  #################################  |
+\__#_/     \____/     \____/     \_#__/
+   #    _        _______  _____    #
+   #   (_)      |_   __ \|_   _|   #      -*-     Development version    -*-
+   #   __  ______ | |__) | | |     #
+   Y  [  ||______||  ___/  | |     #      A Python interface for (ab initio)
+  0 0  | |       _| |_    _| |_    #      (path integral) molecular dynamics.
+   #  [___]     |_____|  |_____|   #
+ __#_       ____       ____       _#__
+/  # \     /    \     /    \     / #  \
+|  #################################  |
+\____/     \____/     \____/     \____/
+
+    
+ # Initializing system object 
+ # Initializing simulation object 
+ # Initialize is rescaling from     1 beads to     6 beads
+ # Resampling velocities at temperature 298.0 kelvin
+Import of PyFFTW unsuccessful, using NumPy library instead
+Import of PyFFTW unsuccessful, using NumPy library instead
+ # i-PI loaded input file:  ipi.xml
+ --- begin input file content ---
+<simulation verbosity = 'medium'>
+  <output prefix='example'>
+    <properties stride='20' filename='out'>  [ step, time{picosecond}, conserved{kelvin}, temperature{kelvin}, kinetic_cv{kelvin}, potential{kelvin}, pressure_cv{megapascal}] </properties>
+    <trajectory filename='pos' stride='20' cell_units='angstrom'> positions{angstrom} </trajectory>
+    <trajectory filename='xc' stride='20' cell_units='angstrom'> x_centroid{angstrom} </trajectory>
+  </output>
+  <total_steps>50000</total_steps>
+  <ffsocket name="force-provider" mode="unix">
+    <address> ex2-3  </address>
+  </ffsocket>
+  <system>
+    <initialize nbeads='6'>
+      <file mode='xyz'> init.xyz </file>
+      <velocities mode="thermal" units='kelvin'> 298 </velocities>
+    </initialize>
+    <forces>
+      <force forcefield="force-provider"> </force>
+    </forces>
+    <ensemble>
+      <temperature units='kelvin'>298</temperature>
+    </ensemble>
+    <motion mode='dynamics'>
+      <dynamics mode='nvt'>
+        <thermostat mode='langevin'>
+	      <tau units="femtosecond">100</tau>
+	    </thermostat>
+	    <timestep units='femtosecond'> 0.25</timestep>
+      </dynamics>
+    </motion>
+  </system>
+</simulation>
+ ---  end input file content  ---
+Created unix socket with address ex2-3
+ @ForceField: Starting the polling thread main loop.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ # Average timings at MD step       0. t/step: 2.09939e-02
+ # Average timings at MD step     100. t/step: 3.05342e-02
+ # Average timings at MD step     200. t/step: 3.04160e-02
+ # Average timings at MD step     300. t/step: 3.03627e-02
+ # Average timings at MD step     400. t/step: 3.05917e-02
+ # Average timings at MD step     500. t/step: 3.04652e-02
+ # Average timings at MD step     600. t/step: 3.04476e-02
+ # Average timings at MD step     700. t/step: 3.05234e-02
+ # Average timings at MD step     800. t/step: 3.04316e-02
+ # Average timings at MD step     900. t/step: 3.10171e-02
+ # Average timings at MD step    1000. t/step: 3.05973e-02
+ # Average timings at MD step    1100. t/step: 3.06617e-02
+ # Average timings at MD step    1200. t/step: 3.00295e-02
+ # Average timings at MD step    1300. t/step: 3.06831e-02
+ # Average timings at MD step    1400. t/step: 2.95065e-02
+ # Average timings at MD step    1500. t/step: 3.05402e-02
+ # Average timings at MD step    1600. t/step: 2.98360e-02
+ # Average timings at MD step    1700. t/step: 3.03692e-02
+ # Average timings at MD step    1800. t/step: 2.96288e-02
+ # Average timings at MD step    1900. t/step: 2.99436e-02
+ # Average timings at MD step    2000. t/step: 3.12079e-02
+ # Average timings at MD step    2100. t/step: 3.00744e-02
+ # Average timings at MD step    2200. t/step: 3.03046e-02
+ # Average timings at MD step    2300. t/step: 3.10216e-02
+ # Average timings at MD step    2400. t/step: 3.04428e-02
+ # Average timings at MD step    2500. t/step: 3.04838e-02
+ # Average timings at MD step    2600. t/step: 3.03584e-02
+ # Average timings at MD step    2700. t/step: 3.10959e-02
+ # Average timings at MD step    2800. t/step: 3.39364e-02
+ # Average timings at MD step    2900. t/step: 3.72674e-02
+ !W!  @SOCKET:   Client  died or got unresponsive(C). Removing from the list.
+ !W!  @SOCKET:   Client  died or got unresponsive(C). Removing from the list.
+ # Average timings at MD step    3000. t/step: 4.27357e-02
+ !W!  @SOCKET:   Client  died or got unresponsive(C). Removing from the list.
+ !W!  @SOCKET:   Client died a horrible death while getting forces. Will try to cleanup.
+ !W!  @SOCKET:   Client  died or got unresponsive(C). Removing from the list.
+ !W!  @SOCKET:   Client  died or got unresponsive(C). Removing from the list.
+ # Average timings at MD step    3100. t/step: 5.99700e-02
+ !W!  @SOCKET:   Client  died or got unresponsive(C). Removing from the list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ @SOCKET:   Client asked for connection from . Now hand-shaking.
+ @SOCKET:   Handshaking was successful. Added to the client list.
+ # Average timings at MD step    3200. t/step: 2.98352e-01
+ # Average timings at MD step    3300. t/step: 3.57255e-02
+ # Average timings at MD step    3400. t/step: 3.62401e-02
+ # Average timings at MD step    3500. t/step: 3.67689e-02
+ # Average timings at MD step    3600. t/step: 3.71749e-02
+ # Average timings at MD step    3700. t/step: 3.73484e-02
+ # Average timings at MD step    3800. t/step: 3.63947e-02
+ # Average timings at MD step    3900. t/step: 3.61795e-02
+ # Average timings at MD step    4000. t/step: 3.62161e-02
+ # Average timings at MD step    4100. t/step: 3.70425e-02
+ # Average timings at MD step    4200. t/step: 3.63752e-02
+ # Average timings at MD step    4300. t/step: 3.60549e-02
+ # Average timings at MD step    4400. t/step: 3.69893e-02
+ # Average timings at MD step    4500. t/step: 3.64825e-02
+ # Average timings at MD step    4600. t/step: 3.55183e-02
+ # Average timings at MD step    4700. t/step: 3.68181e-02
+ # Average timings at MD step    4800. t/step: 3.73611e-02
+ # Average timings at MD step    4900. t/step: 3.67371e-02
+ # Average timings at MD step    5000. t/step: 3.60674e-02
+ # Average timings at MD step    5100. t/step: 3.63889e-02
+ # Average timings at MD step    5200. t/step: 3.72062e-02
+ # Average timings at MD step    5300. t/step: 3.56537e-02
+ # Average timings at MD step    5400. t/step: 3.56314e-02
+ # Average timings at MD step    5500. t/step: 3.56787e-02
+ # Average timings at MD step    5600. t/step: 3.68409e-02
+ # Average timings at MD step    5700. t/step: 3.68821e-02
+ # Average timings at MD step    5800. t/step: 3.60527e-02
+ # Average timings at MD step    5900. t/step: 3.59884e-02
+ # Average timings at MD step    6000. t/step: 3.60588e-02
+ # Average timings at MD step    6100. t/step: 3.58609e-02
+ # Average timings at MD step    6200. t/step: 3.51436e-02
+ # 

@@ -4,12 +4,12 @@
     <trajectory filename='pos' stride='20' cell_units='angstrom'> positions{angstrom} </trajectory>
     <trajectory filename='xc' stride='20' cell_units='angstrom'> x_centroid{angstrom} </trajectory>
   </output>
-  <total_steps>500000</total_steps>
+  <total_steps>50000</total_steps>
   <ffsocket name="force-provider" mode="unix">
-    <address> ex2-1  </address>
+    <address> ex2-2  </address>
   </ffsocket>
   <system>
-    <initialize nbeads='6'>
+    <initialize nbeads='1'>
       <file mode='xyz'> init.xyz </file>
       <velocities mode="thermal" units='kelvin'> 298 </velocities>
     </initialize>
@@ -22,8 +22,8 @@
     <motion mode='dynamics'>
       <dynamics mode='nvt'>
         <thermostat mode='langevin'>
-          <tau units='femtosecond'> 100 </tau>
-        </thermostat>
+	      <tau units="femtosecond">100</tau>
+	    </thermostat>
 	    <timestep units='femtosecond'> 0.25</timestep>
       </dynamics>
     </motion>
