@@ -417,10 +417,10 @@ post-processing tool that is part of the \url{toolbox} library.
 Run the following command in the two folders used during the exercise
 2: \url{ex-2} and \url{ex-2-piglet}.
 \begin{lstlisting}[language=bash]
-$read_box example-xc.xyz > box.dat%$
-$trajworks -ixyz -box box.dat -fstart 10 -gr -gr1 O -gr2 O \
-        -grmax 5 -grbins 250 -hwin triangle -hwinfac 2 \
-         < example-xc.xyz > gOO.dat%$
+$read_box <(tail -q -n +100 example.pos_*.xyz) > box.dat%$
+$tail -q -n +100 example.pos_*.xyz | trajworks -ixyz \
+        -box box.dat -gr -gr1 O -gr2 O -grmax 5 -grbins 250 -hwin \
+        triangle  -hwinfac 2 > gOO.dat%$
 \end{lstlisting}
 
 To visualize the result you can use the \texttt{plot} command from
