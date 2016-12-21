@@ -1,0 +1,7 @@
+#!/bin/bash
+
+FILENAME=$1
+
+grep CELL $FILENAME  | awk '{printf"%6.3f 0.0 0.0 0.0 %6.3f 0.0 0.0 0.0 %6.3f\n", $3, $4, $5}'
+
+

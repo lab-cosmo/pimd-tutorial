@@ -4,7 +4,7 @@
     <trajectory stride='20' filename='xc' format='xyz' cell_units='angstrom'> x_centroid{angstrom}</trajectory>
     <trajectory stride='20' filename='pos' format='xyz' cell_units='angstrom'> positions{angstrom}</trajectory>
   </output>
-  <total_steps>50000</total_steps>
+  <total_steps>250000</total_steps>
   <ffsocket name='force-provider' mode='unix'>
     <address>ex3-1</address>
   </ffsocket>
