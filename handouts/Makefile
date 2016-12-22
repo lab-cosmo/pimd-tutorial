@@ -1,6 +1,6 @@
 .PHONY: all clean
 
-all: handout.pdf 
+all: handout.pdf
 	cp handout.pdf ../
 
 clean:
@@ -10,15 +10,13 @@ distclean:
 	clean
 	rm -r handout.pdf
 
-%.aux : %.tex 
+%.aux : %.tex
 	pdflatex $*
 
-%.pdf : %.tex %.bbl style.tex
+%.pdf : %.tex #%.bbl style.tex
 	while (pdflatex $* ; \
 	grep -q "Rerun to get cross" $*.log ) do true ; \
 	done
 
-%.bbl : %.aux biblio.bib
-	bibtex $*
-
-
+# %.bbl : %.aux biblio.bib
+# 	bibtex $*

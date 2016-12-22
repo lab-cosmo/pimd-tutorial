@@ -41,7 +41,7 @@ fig. \ref{fig:ipi-scheme}). Moreover, you will understand how to
 set-up a simulation using the PIGLET thermostat to improve the Path
 Integral Molecular Dynamics efficiency.
 
-\begin{Exercise}[label={i-pi},title={Molecular Dynamics: a client/server approach}]
+\begin{Exercise}[label={i-pi},title={PIMD: a client/server approach}]
 
 In this exercise, we will perform a simple Molecular Dynamics (MD)
 calculation using \PWscf\ as engine. Since the computation of QM forces is
@@ -59,7 +59,12 @@ How is told to \pwx\ where to find the \ipi\ server?\\
 
 The input of \pwx\ is a valid input to run a single point
 computation. To make \pwx\ aware of \ipi, you should specify an option
-when calling the software (see section 3.6 of PWscf user's manual).
+when calling the software (see section 3.6 of PWscf user's
+manual).\newline
+
+\vspace{1em}
+\textbf{DO NOT RUN THE FOLLOWING COMMAND NOW!}
+\vspace{1em}
 \begin{lstlisting}[language=bash]
 pw.x --ipi host:port < pw.in
 \end{lstlisting}
@@ -104,15 +109,17 @@ double-quotes!}\\
 The \texttt{name} attribute in the \texttt{ffsocket} node assigns a
 reference to the forcefield within the \ipi\ input. This reference
 will be used to specify the origin of the force within the
-\texttt{system} node.
+\texttt{system} node. If we want to use ``INET'' sockets, beside the
+\texttt{<address>} node we have to provide a \texttt{<port>} node that
+would be ignored when a ``UNIX'' socket is used.
 
 \Question
-Introduce a \texttt{<force>} node that references to the previously 
+Introduce a \texttt{<force>} node that references to the previously
  defined \texttt{<ffsocket>}.
 
 \ipi\ can manage different simulations at the same time. Each
 simulation is defined in the \texttt{<system>} node. Each
-\texttt{<system>} can also use forces coming from different 
+\texttt{<system>} can also use forces coming from different
 calculators. Since this is an introductory course, we are going to use
 a single system with a single force. In the file \url{ex-1/ipi.xml}
 look for the following snippet:
@@ -149,8 +156,11 @@ following command after replacing the \texttt{unix\_address} with the
 actual address where \ipi\ is waiting (if followed tutorial
 suggestions, this should be \texttt{pw-forces}):
 \begin{lstlisting}[language=bash]
-pw.x --ipi unix_address:UNIX < pw.in
+pw.x --ipi unix_address:UNIX < ../pw.in
 \end{lstlisting}
+When we use a UNIX socket, there is no need for specifying a port. The
+\texttt{port} field, as shown in the first point of this exercise, is
+then replaced by the \texttt{UNIX} string that tells \pwx\ to use a UNIX socket.
 
 
 \Question
@@ -179,7 +189,12 @@ where it is running, or create a file named \url{EXIT} in the folder
 where \ipi\ is running (you can use the bash command \texttt{touch
   EXIT}).  Watch how \ipi\ responds, and how \pwx\ reacts.  Think
 about what are the advantages of a clean exit when a MD program stops
-unexpectedly.
+unexpectedly. When \ipi\ dies cleanly, it generates a \texttt{RESTART}
+file on the working directory. You can use that \texttt{RESTART} as a
+valid input for \ipi. If look inside the file you can find all the
+nodes that are also defined in the initial input. Beside them, you
+also have many nodes to specify the status of the various quantities
+when \ipi\ died.
 
 
 \Question
@@ -382,7 +397,7 @@ atmospheric pressure, use the following snippet inside the
 \begin{lstlisting}[language=xml]
 <stress units='megapascal'> [10, 0, 0, 0, 10, 0, 0, 0, 10] </stress>
 \end{lstlisting}
-The stress is a 3x3 tensor. To simplify user's life, this kind of tensors are 
+The stress is a 3x3 tensor. To simplify user's life, this kind of tensors are
 flatten in the \ipi input.
 
 At this point the input is ready to perform a simulation with at
