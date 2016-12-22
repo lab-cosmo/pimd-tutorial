@@ -22,10 +22,10 @@
     </ensemble>
     <motion mode='dynamics'>
       <dynamics mode='nvt'>
-	<thermostat mode='pile_l'>
-	  <tau units="femtosecond">100</tau>
-	</thermostat>
-	<timestep units="femtosecond">0.5</timestep>
+	    <thermostat mode='langevin'>
+	      <tau units="femtosecond">100</tau>
+	    </thermostat>
+	    <timestep units="femtosecond">0.5</timestep>
       </dynamics>
       <fixcom>True</fixcom>
     </motion>
