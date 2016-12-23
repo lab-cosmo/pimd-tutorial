@@ -360,27 +360,11 @@ it is already used).\\
 \vspace{2em}
 \textbf{Do not stop the simulations of exercise 2!}
 
-
-% \Question
-% Stop LAMMS (press \url{Ctrl+c} in the terminal where it has been
-% ran). \ipi\ is now waiting for a new connection. Restart LAMMPS with
-% the following command:
-% \begin{lstlisting}[language=bash]
-% lmp_serial -i in.water > lmp.out.1 &
-% \end{lstlisting}
-% The shell should still present you the prompt. Run the same command a
-% second time replacing the last ``1'' with a ``2''. What is happening
-% in the \ipi\ terminal? You can see that now \ipi\ prints out much more
-% information. Can you understand what they are? How many instances of
-% LAMMPS could be used to maximize the performances?
-
 \end{Exercise}
 
 With this second exercise we performed a much more interesting
 simulation using some advanced method to increase the efficiency of
-the PIMD statistical sampling. Before moving to the next exercise, we
-strongly suggest to run the same simulation using a white noise Langevin
-thermostat and a single bead (classical dynamics).  Let both run while
+the PIMD statistical sampling. Let both run while
 working on the next exercise. We will come back to these at the end of
 the tutorial to analyze some results.
 
@@ -389,87 +373,60 @@ proceed with the next simulation without much help. Pay attention to
 the fact that only one instance of \ipi\ can use a given socket at
 time. If you want to run two \ipi\ server at the same time, make sure
 they have a different \texttt{<address>} or, in the case of INET domain
-sockets, at least different \texttt{<port>}. At the end, you can look
-at the differences between the two trajectories.
+sockets, at least different \texttt{<port>} values. 
 
 \vspace{2em}
 
 \begin{Exercise}[label={inputs},title={PIMD-NPT simulation of ice}]
-The goal of this exercise is to run a PIMD simulation in the NPT
-ensemble. The \ipi\ input provided with the file \url{ex-3/ipi.xml} is
-a valid input for a PIMD-NVT simulation. The idea is to transform it
-in a valid input for a PIMD-NPT simulation.
+  The goal of this exercise is to run a PIMD simulation in the NST
+  ensemble (constant temperature and stress). The \ipi\ input provided
+  with the file \url{ex-3/ipi-template.xml} is a valid input for a
+  PIMD-NPT simulation. Make a copy of the template file to
+  \url{ex-3/ipi.xml}. The idea is to start from the latter file to
+  prepare in a valid input for a PIMD-NST simulation.
 
-\Question
-Take a look at the input provided and identify the nodes responsible
-for the task \ipi\ will perform.
-\texttt{motion} is the most important node in this case.
-Look at the following snippet:
-\begin{lstlisting}[language=xml]
-<motion mode='dynamics'>
-<dynamics mode='nvt'>
-<thermostat mode='langevin'>
-<tau units='femtosecond'> 100 </tau>
-</thermostat>
-<timestep units='femtosecond'> 0.25 </timestep>
-</dynamics>
-</motion>
-\end{lstlisting}
-This section of the input tells \ipi\ that the computation we want to
-perform is a molecular \texttt{dynamics}, in the \texttt{nvt} ensemble
-using a \texttt{langevin thermostat} and a \texttt{timestep} of 0.25
-femtosecond.
+\Question 
+Take a look at the input provided and identify the nodes
+responsible for the task \ipi\ will perform.  The attribute
+\texttt{mode} of the node \texttt{motion}, in our case, is set to
+\texttt{dynamics}. This attribute is the responsible in defining the
+task \ipi\ will attend. All the data contained into the
+\texttt{<dynamics>} node define the characteristics of the simulation:
+thermostat, barostat, timestep. 
 
 There is also another important section:
 \begin{lstlisting}[language=xml]
 <ensemble>
 <temperature units='kelvin'> 200 </temperature>
+<pressure units='megapascal'> 0.1 </pressure>
 </ensemble>
 \end{lstlisting}
 This node of the input define all the ensemble properties. In the
-case you want to perform an NPT simulation, the pressure must be
-defined within the \texttt{ensemble} node.
+case you want to perform an NST simulation, replace the
+\texttt{<pressure>} node with the \texttt{<stress>} one. 
 
-
-\Question
-Add a barostat. You can follow the user guide to understand how to
-set-up the barostat. Anyway, the following snippet provide a general setup
-which is suitable for this case.
-\begin{lstlisting}[language=xml]
-<barostat mode='isotropic'>
-<tau units='femtosecond'> 200</tau>
-<thermostat mode='langevin'>
-<tau units='femtosecond'> 100</tau>
-</thermostat>
-<h0> [ 25.6156, 0, 0, 0, 29.5783, 0, 0, 0, 27.8867 ]</h0>
-</barostat>
-\end{lstlisting}
-Where is the place for this node? The \texttt{barostat} is a
-characteristic of the \texttt{dynamics} itself. Then it must be
-specified within that node. Copy the snippet aforementioned and paste
-just before the \texttt{<timestep>} node.
-
-
-\Question What if we want to perform an NPT simulation with an
-anisotropic barostat? This kind of simulations need an extension of
-the NPT ensemble, called NST (constant-temperature,
-constant-stress). Thus, in \ipi\ set the attribute \texttt{mode} of
-the \texttt{dynamic} node to \texttt{nst}. This means also that the
+\Question 
+Adapt the \texttt{<barostat>} to run an NST simulation. The
+main difference between NPT and NST simulation is that the latter use
+an anisotropic barostat. You can see that the \texttt{<barostat>} node
+has an attribute \texttt{mode} that is set to \texttt{isotropic}. Set
+it to \texttt{anisotropic}.  This means that also the
 \texttt{<ensemble>} node must contain a stress tensor instead of an
 isotropic pressure. To simulate our system with an anisotropic cell at
 atmospheric pressure, use the following snippet inside the
 \texttt{<ensamble>} node:
 \begin{lstlisting}[language=xml]
-<stress units='megapascal'> [10, 0, 0, 0, 10, 0, 0, 0, 10] </stress>
+<stress units='megapascal'> [0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1] </stress>
 \end{lstlisting}
 The stress is a 3x3 tensor. To simplify user's life, this kind of tensors are
-flatten in the \ipi input.
+flattened in the \ipi input.
 
 At this point the input is ready to perform a simulation with at
 ``constant anisotropic pressure''.
 
 \Question
-What does the list \texttt{h0} contains? Why do we need a thermostat
+What does the list \texttt{h0} contains in the \texttt{<barostat>}
+node? Why do we need a thermostat 
 within the barostat?
 
 The list of numbers is a reference cell for the Parrinello-Rahman
@@ -477,12 +434,29 @@ barostat (which is the one implemented in \ipi). In practice, those
 numbers are the dimension of the cell that must be written into the xyz
 input file (\url{ex3-1/init.xyz}) or in the pdb file (take as an
 example the one at \url{ex1/h2o-init.pdb}). The coordinate files
-also contains the units of dimension of the cell and the positions
+also contain the units of dimension of the cell and positions
 (\texttt{cell\{angstrom\}} and \texttt{position\{angstrom\}}).
 
 \Question
 Following the same procedure used in the last exercise, start this
-simulation.
+simulation. Pay attention to use different sockets from the ones used
+in exercise 2.
+
+\Question
+\textbf{This is optional, do it only if you have enough time!}\\
+Stop \ipi\ (press \url{Ctrl+c} in the terminal where it has been
+ran). Edit the \url{ipi.xml} file and change the verbosity (fist line)
+to \texttt{high}. Restart \ipi\ with the usual command. Once 
+\ipi\ is waiting for a new connection, start LAMMPS with
+the following command:
+\begin{lstlisting}[language=bash]
+lmp_serial -i in.water > lmp.out.1 &
+\end{lstlisting}
+The shell should still present you the prompt. Run the same command a
+second time replacing the last ``1'' with a ``2''. What is happening
+in the \ipi\ terminal? You can see that now \ipi\ prints out much more
+information. Can you understand what they are? How many instances of
+LAMMPS could be used to maximize the performances?
 
 \end{Exercise}
 
@@ -490,25 +464,25 @@ simulation.
 As a last exercise, you should compare the radial distribution
 function obtained from the two simulation of exercise 2.
 
-\Question
-Compute radial distribution functions for the different simulations. You
-can use any tool of your liking, but we suggest the \url{trajworks}
-post-processing tool that is part of the \url{toolbox} library.
-Run the following command in the two folders used during the exercise
-2: \url{ex-2} and \url{ex-2-piglet}.
+\Question Compute radial distribution functions for the different
+simulations. You can use any tool of your liking, but we suggest the
+\url{trajworks} post-processing tool that is part of the \url{toolbox}
+library.  The following command is a facade to the \texttt{trajworks}
+tool that speed up your work. Run the command from the two folders
+used during the exercise 2: \url{ex-2-langevin} and \url{ex-2-piglet}.
 \begin{lstlisting}[language=bash]
-$read_box <(tail -q -n +100 example.pos_*.xyz) > box.dat%$
-$tail -q -n +100 example.pos_*.xyz | trajworks -ixyz \
-        -box box.dat -gr -gr1 O -gr2 O -grmax 5 -grbins 250 -hwin \
-        triangle  -hwinfac 2 > gOO.dat%$
-\end{lstlisting}
+$make_gofr O O
+\end{lstlisting}%$
+This produce a file called gOO.dat inside the folder with the $g(r)$
+between oxygen atoms. Do the same to compute  the H-O radial
+distribution function.
 
 To visualize the result you can use the \texttt{plot} command from
 \url{ex-2-piglet} folder:
 \begin{lstlisting}[language=bash]
 plot gOO.dat ../ex-2-langevin/gOO.dat -1,2
 \end{lstlisting}
-Also compute the O--H radial distribution function.
+Also visualize the $g(r)$ for the O--H radial distribution function.
 Do you see any difference? Can you explain why?
 
 \end{Exercise}
