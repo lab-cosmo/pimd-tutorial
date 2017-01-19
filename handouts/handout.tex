@@ -29,7 +29,7 @@ method).
 \includegraphics[width=0.9\textwidth]{ipi-scheme.pdf}
 \caption{\ipi\ communicates with the force engine using sockets in a
   client/server fashion where \ipi\ behaves as the server. The engine
-  connects to the server and provide \ipi\ the data it asks
+  connects to the server and provides to \ipi\ the data it asks
   for.}\label{fig:ipi-scheme}
 \end{figure}
 
@@ -54,7 +54,8 @@ In this exercise, we will perform a simple Path Integral Molecular
 Dynamics (PIMD) 
 calculation using \PWscf\ as engine. Since the computation of QM forces is
 expensive, here we use a single molecule of water in gas phase. Moreover, the
-\PWscf\ input is prepared sacrificing the accuracy to run faster.
+\PWscf\ input is prepared sacrificing the accuracy to run faster -- so do not use
+it as a template for any production run.
 
 The simulation will be performed using the NVT ensemble at 300K.  We
 will also record the kinetic and potential energy and the conserved
@@ -68,14 +69,13 @@ How is \pwx\ told where to find the \ipi\ server?\\
 The input of \pwx\ is a valid input to run a single point
 computation. To make \pwx\ aware of \ipi, you should specify an option argument
 when starting the software (see section 3.6 of PWscf user's
-manual).\newline
+manual).\footnote{Do not run the following command now! You need to have 
+first set up and launched the i-PI server, as will be explained further down.}
 
-\vspace{1em}
-\textbf{DO NOT RUN THE FOLLOWING COMMAND NOW!}
-\vspace{1em}
 \begin{lstlisting}[language=bash]
 pw.x --ipi host:port < pw.in
 \end{lstlisting}
+
 The forces are then computed by \pwx\ at the level of electron theory
 specified in the input and passed to \ipi\ thought the socket
 interface.
@@ -88,7 +88,8 @@ instance is essential. You have two possibilities: using a UNIX-domain
 or an INET-domain socket. The former is faster but the server and the
 client(s) must run on the same machine. The latter allows communication
 through the ``internet'' so that \ipi\ and the ``force
-calculator'' can run on a different computer.
+calculator'' can run on a different computers within a cluster, or 
+even (firewalls and network settings permitting.
 
 The following steps tell \ipi\ to wait for a client connecting on the UNIX
 socket called \texttt{single-water-qe}. Look for the following snippet
@@ -176,7 +177,7 @@ If you have time, after finished the tutorial, you can
 try using an INET socket. Define the address of the machine
 where \ipi\ is running as \texttt{<address>} of the
 \texttt{<ffsocket>} node. If also the client will run on the same
-machine, you can use \texttt{localhost} otherwise, if the connection
+machine, you can use \texttt{localhost}. Otherwise, if the connection
 between \ipi\ and the client uses internet, use as \texttt{<address>}
 the actual IP address of the machine. The port can be any integer
 in the range 15000-45000. When you start the client, remember to
@@ -216,7 +217,7 @@ file on the working directory. You can use that \texttt{RESTART} as a
 valid input for \ipi. If look inside the file you can find all the
 nodes that are also defined in the initial input. Beside them, you
 also have many nodes to specify the status of the various quantities
-when \ipi\ died.
+when \ipi\ terminated.
 
 
 \Question
@@ -279,9 +280,11 @@ To start the exercise, perform the following steps:
 \end{itemize}
 The attribute \texttt{mode} of the
 thermostat is set to \texttt{piglet}. The PIGLET thermostat requires
-some parameters that can be downloaded from the following website
+some parameters that can be obtained from the following website
 \url{https://epfl-cosmo.github.io/gle4md/index.html?page=matrix}.
-To obtain the correct parameters for water do the following:
+The parameters that have already been included in the input -- which
+are correct for simulations of aqueous systems at room temperature --
+can be obtained setting the following parameters:
 \begin{enumerate}
 \item Select \texttt{PIGLET} as \textbf{GLE type};
 \item Set the number of beads \textbf{N. beads} to \texttt{6};
@@ -321,7 +324,13 @@ Make a copy of the folder
 copy of \url{ipi-template.xml} to \url{ipi.xml} and open this latter.
 Replace the PIGLET thermostat (all the \texttt{<thermostat>} node:
 from \texttt{<thermostat>} to \texttt{</thermostat>}) with the
-following snippet:
+following snippet:\footnote{Note that a white-noise Langevin 
+thermostat is generally not a good choice to simulate a liquid. 
+You could try a global stochastic velocity rescaling (\texttt{mode="svr"})
+or fetch one of the optimal-sampling GLE thermostats
+from 
+\url{https://epfl-cosmo.github.io/gle4md/index.html?page=matrix}
+}
 \begin{lstlisting}[language=xml]
 <thermostat mode='langevin'>
 <tau units='femtosecond'>100</tau>
@@ -371,7 +380,7 @@ the tutorial to analyze some results.
 At this point, you should know \ipi\ well enough to
 proceed with the next simulation without much help. Pay attention to
 the fact that only one instance of \ipi\ can use a given socket at
-time. If you want to run two \ipi\ server at the same time, make sure
+time. If you want to run two \ipi\ servers at the same time, make sure
 they have a different \texttt{<address>} or, in the case of INET domain
 sockets, at least different \texttt{<port>} values. 
 
@@ -414,15 +423,15 @@ it to \texttt{anisotropic}.  This means that also the
 \texttt{<ensemble>} node must contain a stress tensor instead of an
 isotropic pressure. To simulate our system with an anisotropic cell at
 atmospheric pressure, use the following snippet inside the
-\texttt{<ensamble>} node:
+\texttt{<ensemble>} node:
 \begin{lstlisting}[language=xml]
 <stress units='megapascal'> [0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1] </stress>
 \end{lstlisting}
 The stress is a 3x3 tensor. To simplify user's life, this kind of tensors are
-flattened in the \ipi input.
+flattened in the \ipi{} input.
 
-At this point the input is ready to perform a simulation with at
-``constant anisotropic pressure''.
+At this point the input is ready to perform a simulation at
+``constant stress''.
 
 \Question
 What does the list \texttt{h0} contains in the \texttt{<barostat>}
@@ -430,10 +439,10 @@ node? Why do we need a thermostat
 within the barostat?
 
 The list of numbers is a reference cell for the Parrinello-Rahman
-barostat (which is the one implemented in \ipi). In practice, those
-numbers are the dimension of the cell that must be written into the xyz
-input file (\url{ex3-1/init.xyz}) or in the pdb file (take as an
-example the one at \url{ex1/h2o-init.pdb}). The coordinate files
+barostat (a derivative of which is implemented in \ipi). In practice, those
+numbers are the dimension of the cell that describes the ``average'' size
+of the system. In general results are fairly insensitive to the precise value. 
+The coordinate files
 also contain the units of dimension of the cell and positions
 (\texttt{cell\{angstrom\}} and \texttt{position\{angstrom\}}).
 
@@ -450,13 +459,16 @@ to \texttt{high}. Restart \ipi\ with the usual command. Once
 \ipi\ is waiting for a new connection, start LAMMPS with
 the following command:
 \begin{lstlisting}[language=bash]
-lmp_serial -i in.water > lmp.out.1 &
+lmp_serial -i in.ice > lmp.out.1 &
 \end{lstlisting}
 The shell should still present you the prompt. Run the same command a
 second time replacing the last ``1'' with a ``2''. What is happening
 in the \ipi\ terminal? You can see that now \ipi\ prints out much more
 information. Can you understand what they are? How many instances of
-LAMMPS could be used to maximize the performances?
+LAMMPS could be used to maximize the performances?\footnote{Note that
+\ipi{} is designed with ab initio simulations in mind, so the parallel
+scaling when using inexpensive empirical forcefields will not be perfect --
+due to the communication overhead and the intrinsic limitations of Python.}
 
 \end{Exercise}
 
