@@ -9,7 +9,8 @@
 &MOTION
 
   &DRIVER
-   HOST localhost
+   HOST drivercp2k
+   UNIX TRUE
    PORT 20614
   &END DRIVER
 &END MOTION
