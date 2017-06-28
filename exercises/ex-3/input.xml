@@ -1,0 +1,54 @@
+<simulation verbosity="low">
+    <output prefix="simulation">
+        <properties stride="1" filename="out">
+        [ step, time{picosecond}, conserved, temperature{kelvin}, kinetic_cv,  potential, pot_component(0), pot_component(1), pot_component(2) ]
+        </properties>
+        <trajectory filename="pos" format="pdb" stride="1"> positions{angstrom} </trajectory>
+        <checkpoint filename="chk" stride="100" overwrite="true"/>
+    </output>
+    <prng> <seed> 3924 </seed> </prng>
+    <total_steps> 800000 </total_steps>
+    <ffsocket mode="unix" name="cp2k">
+        <latency> 1.00000000e-02 </latency>
+        <timeout> 6.00000000e+02 </timeout>
+        <address> drivercp2k </address>
+    </ffsocket>
+    <!-- Adds two additional force providers-->
+    <ffsocket mode="unix" name="qt32">
+          <latency> 1.00000000e-04 </latency>
+          <address> qt32 </address>
+    </ffsocket>
+    <ffsocket mode="unix" name="qt01">
+         <latency> 1.00000000e-04 </latency>
+         <address> qt01 </address>
+    </ffsocket>
+    <system>
+        <initialize nbeads="32">
+            <file mode="chk"> init.chk </file>
+            <cell mode="abc" units="angstrom"> [ 8, 8, 8 ] </cell>
+            <velocities mode="thermal" units="kelvin"> 300  </velocities>
+        </initialize>
+        <forces>
+            <!-- Expresses force components as linear combinations-->
+            <force forcefield="cp2k" nbeads="01"> <mts_weights> [ 1, 0 ] </mts_weights>  </force>
+            <force forcefield="qt32" nbeads="32"> <mts_weights> [ 0, 1 ] </mts_weights> </force>
+            <force forcefield="qt01" nbeads="01"> <mts_weights> [-1, 0 ] </mts_weights> </force> 
+        </forces>
+        <ensemble>
+            <temperature units="kelvin"> 300 </temperature>
+        </ensemble>
+        <motion mode="dynamics">
+            <fixcom> False </fixcom>
+            <!-- Uses a multiple time step (MTS) integrator -->
+            <dynamics mode="mts">
+                <timestep units="femtosecond"> 1.00 </timestep>
+                <thermostat mode="pile_l">
+                <tau units="femtosecond"> 100 </tau> 
+                <pile_lambda> 0.1 </pile_lambda>
+                </thermostat>
+                <!-- Handles the various time steps -->
+                <nmts> [1,4] </nmts>
+            </dynamics>
+        </motion>
+    </system>
+</simulation>

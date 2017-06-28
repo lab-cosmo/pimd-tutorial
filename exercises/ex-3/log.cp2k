@@ -1,0 +1,18 @@
+
+Program received signal SIGABRT: Process abort signal.
+
+Backtrace for this error:
+#0  0x7F0C317C6777
+#1  0x7F0C317C6D7E
+#2  0x7F0C30EFFCAF
+#3  0x7F0C30EFFC37
+#4  0x7F0C30F03027
+#5  0x2313DA8 in __message_passing_MOD_mp_abort at message_passing.F:1032
+#6  0x236E81E in __base_hooks_MOD_cp_abort at base_hooks.F:68
+#7  0x236E9EB in __base_hooks_MOD_cp(bool) at base_hooks.F:155
+#8  0x2204440 in __cp_files_MOD_open_file at cp_files.F:393 (discriminator 1)
+#9  0x1DFDC75 in __cp_parser_types_MOD_parser_create at cp_parser_types.F:235
+#10  0xCABF93 in __input_cp2k_read_MOD_read_input at input_cp2k_read.F:67 (discriminator 3)
+#11  0x46D298 in cp2k_run at cp2k_runs.F:211
+#12  0x471951 in __cp2k_runs_MOD_run_input at cp2k_runs.F:1100
+#13  0x46B908 in cp2k at cp2k.F:281

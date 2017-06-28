@@ -1,0 +1,42 @@
+<simulation verbosity="high">
+    <output prefix="simulation">
+        <properties stride="1" filename="out">
+        [ step, time{picosecond}, conserved, temperature{kelvin}, kinetic_cv,  potential]
+        </properties>
+        <trajectory filename="pos" format="pdb" stride="1"> positions </trajectory>
+        <checkpoint filename="chk" stride="100" overwrite="true"/>
+    </output>
+    <prng> <seed> 3924 </seed> </prng>
+    <total_steps> 8000 </total_steps>
+    <ffsocket mode="inet" name="cp2k">
+        <latency>  1.00000000e-02</latency>
+        <slots> 8 </slots>
+        <port> 20614 </port>
+        <timeout>  6.00000000e+02 </timeout>
+        <address> localhost </address>
+    </ffsocket>
+    <system>
+        <!-- change nbeads to 32 -->
+        <initialize nbeads="1">
+            <file mode="xyz"> init.xyz </file>
+            <cell mode="abc" units="angstrom"> [ 8, 8, 8 ] </cell>
+            <velocities mode="thermal" units="kelvin"> 300  </velocities>
+        </initialize>
+        <forces>
+            <force forcefield="cp2k"> </force>
+        </forces>
+        <ensemble>
+            <temperature units="kelvin"> 300 </temperature>
+        </ensemble>
+        <motion mode="dynamics">
+            <fixcom> False </fixcom>
+            <dynamics mode="nvt">
+                <timestep units="femtosecond"> 0.25 </timestep>
+                <!-- change the mode of the thermostat to "pile_l" -->
+                <thermostat mode="langevin">
+                <tau units="femtosecond"> 100 </tau> 
+                </thermostat>
+            </dynamics>
+        </motion>
+    </system>
+</simulation>
