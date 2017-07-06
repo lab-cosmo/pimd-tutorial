@@ -26,7 +26,7 @@
         <motion mode="dynamics">
             <fixcom> False </fixcom>
             <dynamics mode="nvt">
-                <timestep units="femtosecond"> 0.25 </timestep>
+                <timestep units="femtosecond"> 1.00 </timestep>
                 <thermostat mode="langevin">
                 <tau units="femtosecond"> 100 </tau> 
                 </thermostat>

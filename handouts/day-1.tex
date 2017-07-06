@@ -387,7 +387,7 @@ $ cat simulation.pos_*.pdb | trajworks -ipdb -gr -gr1 H -gr2 H -grmax 3 -grbins 
 
 For SC PIMD only even beads correspond to physically relevant configurations; you can use the following:
 \begin{lstlisting}[language=bash]
-$ for x in `seq 0 2 47`; do index=`printf "%02d" ${x}`; cat simulation.pos_${index}.pdb ; done | trajworks -ipdb -gr -gr1 H -gr2 H -grmax 3 -grbins 200 -hwin triangle -hwinfac 1 > gHH.data
+$ bash cateven.bash | trajworks -ipdb -gr -gr1 H -gr2 H -grmax 3 -grbins 200 -hwin triangle -hwinfac 1 > gHH.data
 \end{lstlisting}
 
 \Question
