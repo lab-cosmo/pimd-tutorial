@@ -17,8 +17,7 @@
    </ffsocket>  
 <system>
     <initialize nbeads="1">
-      <file mode="xyz" units="angstrom"> h2o.xyz </file>
-      <cell mode="abc" units="angstrom"> [ 8, 8, 8 ] </cell>
+      <file mode="xyz"> h2o.xyz </file>
       <velocities mode="thermal" units="kelvin"> 300  </velocities>
     </initialize>
     <forces>
