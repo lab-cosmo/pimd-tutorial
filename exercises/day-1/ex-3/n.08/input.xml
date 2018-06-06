@@ -13,7 +13,6 @@
   <system>
     <initialize nbeads="08"> 
       <file mode="chk" > init.chk </file>
-      <velocities mode="thermal" units="kelvin"> 300 </velocities> 
     </initialize>
     <forces><force forcefield="driver"/></forces>
     <ensemble>
