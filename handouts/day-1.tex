@@ -143,7 +143,7 @@ Now it is a good time to start LAMMPS.
 Open up a second terminal either manually or by typing \url{Ctrl+Shift+t}
 and start LAMMPS by entering the command
 \begin{lstlisting}[language=bash]
-$ lmp_ubuntu < in.water
+$ lmp_serial < in.water
 \end{lstlisting}
 Then LAMMPS should start and dump out some outputs.
 
@@ -163,7 +163,7 @@ Now look at whether \ipi{} is still running.
 Notice that although the evolution of MD is paused, \ipi{} itself does not die off but instead continue to run and wait for new client to take over.
 Now start LAMMPS again by typing
 \begin{lstlisting}[language=bash]
-$ lmp_ubuntu < in.water
+$ lmp_serial < in.water
 \end{lstlisting}
 What happens to \ipi{} now?
 
@@ -291,7 +291,7 @@ Now let"s see whether the Internet domain socket can indeed connect.
 Type the following to start \ipi{} and CP2K:
 \begin{lstlisting}[language=bash]
 $ i-pi input.xml &> log.ipi &
-$ cp2k.popt -o h2o.out cp2k.in &
+$ cp2k.ssmp -o h2o.out cp2k.in &
 \end{lstlisting}
 Does it work? If you have access to two computers that can communicate with each
 other on the same network, you can try to run in a distributed-computing mode,
@@ -331,7 +331,7 @@ To run the simulation launch \ipi{} and lammps in background. It is advisable to
 logs as useful information can be extracted from them.
 \begin{lstlisting}[language=bash]
 $ i-pi input.xml &> log.ipi &
-$ lmp_ubuntu < in.lmp &> log.lmp &
+$ lmp_serial < in.lmp &> log.lmp &
 \end{lstlisting}
 To compute the average values of the observable use the program called \url{autocorr} which takes a time series as an input and evaluates its auto-correlation function. It requires a mandatory flag called \url{-maxlag} which is the cutoff at the auto-correlation function is truncated. In addition to that it also computes the average and the associated error. Assuming that \lstinbash{$prefix} is the prefix used in \ipi{} input \begin{lstlisting}[language=bash]
 $ awk '!/#/{ print $6}' $prefix.out | tail -n +100 | \
@@ -469,7 +469,7 @@ quantum simulations in their respective directories.
 
 \begin{lstlisting}[language=bash]
 $ i-pi input.xml &> log.ipi &
-$ cp2k.popt in.cp2k &> log.cp2k &
+$ cp2k.ssmp in.cp2k &> log.cp2k &
 \end{lstlisting}
 
 \Question

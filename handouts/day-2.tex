@@ -48,7 +48,7 @@ initially perform a reference molecular dynamics run, with $P=1$.
 \begin{lstlisting}[language=bash]
 $ cd ex-1 
 $ i-pi base.xml &> log.ipi &
-$ lmp_ubuntu < in.water &> log.lammps & 
+$ lmp_serial < in.water &> log.lammps & 
 \end{lstlisting}%$
 
 \Question
@@ -213,7 +213,7 @@ accelerated PI methods.}
 \Question Start by running the Suzuki-Chin simulation, that is
 \begin{lstlisting}[language=bash]
 $ i-pi highorder.xml &> log.ipi &
-$ lmp_ubuntu < in.ice &> log.lammps &
+$ lmp_serial < in.ice &> log.lammps &
 \end{lstlisting}
 While the simulation runs, look at the input file. You'll notice
 that we are outputting four more properties: 
@@ -238,8 +238,8 @@ separately, and verify that the two subsets sample different ensembles.
 \Question Finally, try to run the input file that also uses RPC
 \begin{lstlisting}[language=bash]
 $ i-pi ultimate.xml &> log.ipi &
-$ lmp_ubuntu < in.ice_long &> log.lammps &
-$ lmp_ubuntu < in.ice_short &> log.lammps &
+$ lmp_serial < in.ice_long &> log.lammps &
+$ lmp_serial < in.ice_short &> log.lammps &
 \end{lstlisting}%$
 Try to follow the complex simulation set up. If you are familiar with the structure
 of LAMMPS input files, you'll notice that \url{in.ice_long} computes only

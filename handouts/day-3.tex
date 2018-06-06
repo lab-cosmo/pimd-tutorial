@@ -89,7 +89,7 @@ Now the directory \texttt{dir\_\$number} contains all input files necessary to s
 \begin{lstlisting}[language=Bash,emph={\$}]
 $ i-pi input.xml &> log.ipi &
 $ what=$(grep addr input.xml | sed "s/.*<address>//; s/<\/address>//")
-$ sed "s/addr/$what/" in.tip4pf | lmp_ubuntu &> log.lammps &
+$ sed "s/addr/$what/" in.tip4pf | lmp_serial &> log.lammps &
 
 \end{lstlisting}
 
@@ -128,7 +128,7 @@ $ cd dir_${number}
 $ cp ../../lammps_inputs/* .
 $ i-pi input.xml &> log.ipi &
 $ what=$(grep addr input.xml | sed "s/.*<address>//; s/<\/address>//")
-$ for i in `seq 1 8`; do sed "s/addr/$what/" in.tip4pf | lmp_ubuntu &> log.$i & done
+$ for i in `seq 1 8`; do sed "s/addr/$what/" in.tip4pf | lmp_serial &> log.$i & done
 \end{lstlisting}
 
 
