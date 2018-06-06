@@ -12,7 +12,7 @@
   </ffsocket>
   <system>
     <initialize nbeads="32"> 
-      <file mode="pdb"> init.pdb </file>
+      <file mode="chk"> init.chk </file>
       <velocities mode="thermal" units="kelvin"> 300 </velocities> 
     </initialize>
     <forces><force forcefield="driver"/></forces>
