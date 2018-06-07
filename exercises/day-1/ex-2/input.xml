@@ -27,12 +27,11 @@
       <temperature units="kelvin"> 300 </temperature>
     </ensemble>
     <motion mode="dynamics">
-      <fixcom>False</fixcom>
+      <fixcom>True</fixcom>
       <dynamics mode="nvt">
          <timestep units="femtosecond"> 1.0 </timestep>
-         <thermostat mode="pile_l">
+         <thermostat mode="langevin">
          <tau units="femtosecond">100</tau> 
-         <pile_lambda>0.1</pile_lambda>
          </thermostat>
       </dynamics>
     </motion>
