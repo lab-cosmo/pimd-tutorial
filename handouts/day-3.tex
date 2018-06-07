@@ -97,7 +97,9 @@ The two last lines are there so as to inform LAMMPS (by changing its input), the
 
 After approximately 10 minutes this simulation should be done and you can analyze the outputs. {\it Immediately after this simulation ends, launch the TRPMD simulation on the second item below before analyzing the outputs, so that it starts running in the background}.
 
-Look at outputs using \texttt{gnuplot} and \texttt{vmd}. In order to create the dipole and velocity autocorrelations, we provide scripts in the \texttt{day-3/tools} folder that uses \lstinbash$trajworks$ functionalities in order to perform fourier transforms and calculate autocorrelation functions, called \lstinbash$post-vel$ and \lstinbash$post-dpl$. We will actually calculate the dipole derivative autocorrelation function, which already includes the $\omega^2$ factor that appears when relating the Kubo transform of the autocorrelation function to the standard canonical one.
+Look at outputs using \texttt{gnuplot} and \texttt{vmd}. In order to create the dipole and velocity autocorrelations, we provide scripts in the \texttt{day-3/tools} folder that uses \lstinbash$trajworks$
+functionalities in order to perform fourier transforms and calculate autocorrelation functions, called \lstinbash$post-vel$ and \lstinbash$post-dpl$.
+Note that we will actually calculate the dipole derivative autocorrelation function, which already includes an extra $\omega^2$ factor in comparison to the dipole autocorrelation. 
 
 Go to the folder where you performed the simulation and run the following commands:
 
