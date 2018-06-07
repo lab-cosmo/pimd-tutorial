@@ -8,12 +8,12 @@
   </output>
   <prng><seed> 3924</seed></prng>
   <total_steps>800000</total_steps>
-    <ffsocket mode='unix' name='cp2k'>
+    <ffsocket mode='inet' name='cp2k'>
          <latency>  1.00000000e-02</latency>
          <slots>4</slots>
          <port> 20614 </port>
          <timeout>  6.00000000e+02</timeout>
-         <address> drivercp2k </address>
+         <address> localhost </address>
    </ffsocket>  
 <system>
     <initialize nbeads="1">
