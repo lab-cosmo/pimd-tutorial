@@ -99,7 +99,7 @@ After approximately 10 minutes this simulation should be done and you can analyz
 
 Look at outputs using \texttt{gnuplot} and \texttt{vmd}. In order to create the dipole and velocity autocorrelations, we provide scripts in the \texttt{day-3/tools} folder that uses \lstinbash$trajworks$ functionalities in order to perform fourier transforms and calculate autocorrelation functions, called \lstinbash$post-vel$ and \lstinbash$post-dpl$. We will actually calculate the dipole derivative autocorrelation function, which already includes the $\omega^2$ factor that appears when relating the Kubo transform of the autocorrelation function to the standard canonical one.
 
-Copy files to the folder where you performed the simulation and run the following commands:
+Go to the folder where you performed the simulation and run the following commands:
 
 \begin{lstlisting}[language=Bash,emph={\$}]
 $ cp ../../../tools/post* .
@@ -110,12 +110,12 @@ $ sh post-vel
 
 Visualize (either with \texttt{xmgrace} or \texttt{gnuplot}) the files \texttt{dpl.ft} (Fourier transform of the dipole autocorrelation) and \texttt{vel.ft} (Fourier transform of the velocity autocorrelation). 
 
-Analyze similarities and differences between them (remember this is a short simulation that cannot yield very converged correlation functions). In the folder \texttt{ex-1/precomputed-trajectories/nve/} you will find several longer precomputed and preanalyzed trajectories.
+Analyze similarities and differences between them (remember this is a short simulation that cannot yield very converged correlation functions). In the folder \texttt{ex-1/precomputed-trajectories/nve/} you will find several longer precomputed and preanalyzed trajectories. Look for the *.vv and *.dpl files.
 
 
 \item {\bf Vibrational spectra with quantum nuclei (Time: 1 hour)} \\
 Due to time constrains, we will only perform one TRPMD run with 48 beads.
-This simulation takes around one hour. For RPMD, more simulations would be needed for a reasonable spectra due to its poor ergodicity, and for (partially adiabatic) CMD, due to the much smaller time step required, the simulation would take 10 times longer.
+This simulation takes around one hour. For RPMD, more simulations would be needed for a reasonable spectra due to its poor ergodicity, and for (partially adiabatic) CMD, due to the much smaller time step required, the simulation would take 10 times longer. Templates of the input files for the corresponding simulations are provided in the folders \texttt{ex-1/rpmd/} and \texttt{ex-1/cmd/}.
 
 The input file for this simulation will be in the \texttt{ex-1/trpmd} folder. The checkpoints from a PIMD simulation that we will use to start the TRPMD one can be found in \texttt{ex-1/checkpoint-pimd}. The set of bash commands you will need to launch this simulation are the following (you can change the variable \texttt{number}):
 
@@ -128,7 +128,7 @@ $ cd dir_${number}
 $ cp ../../lammps_inputs/* .
 $ i-pi input.xml &> log.ipi &
 $ what=$(grep addr input.xml | sed "s/.*<address>//; s/<\/address>//")
-$ for i in `seq 1 8`; do sed "s/addr/$what/" in.tip4pf | lmp_serial &> log.$i & done
+$ for i in {1..8}; do sed "s/addr/$what/" in.tip4pf | lmp_serial &> log.$i & done
 \end{lstlisting}
 
 
