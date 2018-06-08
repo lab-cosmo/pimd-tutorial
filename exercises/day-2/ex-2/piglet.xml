@@ -22,7 +22,7 @@
     <motion mode='dynamics'>
       <dynamics mode="nvt">
        <!-- this is the most general PIMD/GLE thermostat. the parameters can be obtained from 
-            http://epfl-cosmo.github.io/gle4md. Note that for a PIGLET thermostat such as this
+            http://gle4md.org/index.html?page=matrix. Note that for a PIGLET thermostat such as this
             the GLE thermostat is the same for all modes except for mode 0 (the centroid).  -->
        <thermostat mode='nm_gle'> 
         <A shape='(6,9,9)'>
