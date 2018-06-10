@@ -29,7 +29,7 @@
               <tau units='femtosecond'>1000</tau>
               <pile_lambda> 0.01 </pile_lambda>
            </thermostat>
-           <timestep units='femtosecond'> 0.05</timestep>
+           <timestep units='femtosecond'> 0.02</timestep>
          </dynamics>
       </motion>
      <ensemble>
