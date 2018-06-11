@@ -223,10 +223,10 @@ In the folder \texttt{ex-3/convergedspecs} you will find the files \texttt{nve.v
 
 \begin{lstlisting}[language=Bash,emph={\$}]
 $ cd ex-3/convergedspecs
-$ python ../../tools/get_imacf_from_real.py nve.vv 200 56 > nve.imvacf
-$ python ../../tools/get_imacf_from_real.py trpmd.vv 200 56 > trpmd.imvacf
-$ python ../../tools/get_imacf_from_real.py rpmd.vv 200 56 > rpmd.imvacf
-$ python ../../tools/get_imacf_from_real.py cmd.vv 200 56 > cmd.imvacf
+$ python ../../tools/get_imacf_from_real.py nve.vv 200 64 > nve.imvacf
+$ python ../../tools/get_imacf_from_real.py trpmd.vv 200 64 > trpmd.imvacf
+$ python ../../tools/get_imacf_from_real.py rpmd.vv 200 64 > rpmd.imvacf
+$ python ../../tools/get_imacf_from_real.py cmd.vv 200 64 > cmd.imvacf
 \end{lstlisting}
 
 Compare all the imaginary time correlations with the one provided in \texttt{ex-2/precomputed-imvacf/}. Are the imaginary functions reconstructed from different methods appreciably different? Can you think about reasons for their similarities/differences? (Hint: look at the expressions above.)
