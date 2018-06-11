@@ -15,7 +15,9 @@
        <address>h2o-cmd-xxx</address>
    </ffsocket>
    <system>
-     <normal_modes mode='pa-cmd' units="inversecm"> [  14000 ] </normal_modes>
+     <normal_modes>
+        <frequencies style='pa-cmd' units="inversecm"> [13000]   </frequencies>
+     </normal_modes>
      <initialize nbeads='48'>
          <file mode='chk' > ../../pimd-checkpoints/h2o-ice-pimd.restart_xxx  </file>
          <velocities mode="thermal" units='kelvin'> 200 </velocities>
