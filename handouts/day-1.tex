@@ -2,7 +2,7 @@
 \input{./style.tex}
 \title{An introduction to path integral \\molecular dynamics using \ipi{}}
 \author{Venkat Kapil, Bingqing Cheng}
-\date{June 2016}
+\date{June 2018}
 
 \begin{document}
 
@@ -226,10 +226,14 @@ so that the time, temperature, and the trajectory will written out in the units 
 Similarly, the units of the initialization files can be specified such as
 \begin{lstlisting}[language=xml]
 <file mode="xyz" units="angstrom"> h2o.xyz </file>
-<cell mode="abc" units="angstrom"> [ 8, 8, 8 ] </cell>
 <velocities mode="thermal" units="kelvin"> 300 </velocities>
 \end{lstlisting}
-When using \ipi{}, you can play around with the units to facilitate the initialization process as well as subsequent analyses. 
+When using \ipi{}, you can play around with the units to facilitate the initialization process as well as subsequent analyses.
+%
+Please note that \ipi{} can read the unit cell from the comment line in the xyz file. 
+%
+The cell and positions in the CP2K input file is just for the purpose of initializating the CP2K program and at the first simulation step both would be overridden.
+%Also, one can specify the unit cell in the \ipi{} input file, which will override the unit cell read in from the xyz file.
 
 \Question
 Now we will observe the format and structure of \url{input.xml}.
@@ -245,13 +249,12 @@ A xml tag has the following syntax:
 \end{lstlisting}
 For example, in the tag
 \begin{lstlisting}[language=xml]
-<thermostat mode="pile_l">
+<thermostat mode="langevin">
 <tau units="femtosecond">100</tau> 
-<pile_lambda>0.1</pile_lambda>
 </thermostat>
 \end{lstlisting}
 the tag name \lstinxml{thermostat} indicates which part of the simulation options is being defined,
-\lstinxml{mode="pile_l"} specifies the type of thermostat in use,
+\lstinxml{mode="langevin"} specifies the type of thermostat in use,
 and \lstinxml{<tau units="femtosecond">100</tau>} is used to set the parameters used for this particular thermostat.
 Please browse around this \url{input.xml} to see if you can make sense of most of the attributes.
 
