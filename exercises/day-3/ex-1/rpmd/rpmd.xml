@@ -24,7 +24,7 @@
      </forces>
      <motion mode='dynamics'>
         <dynamics mode='nve'>
-           <timestep units='femtosecond'> 0.5 </timestep>
+           <timestep units='femtosecond'> 0.25 </timestep>
          </dynamics>
       </motion>
      <ensemble>

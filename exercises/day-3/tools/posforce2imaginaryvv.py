@@ -59,10 +59,10 @@ def main(prefix, temp):
       if (ifr==0):
          cim = np.zeros((natoms,nbeads+1),float)
 
-      q = depstrip(beads.q)
-      f = depstrip(forces.q)
-      m = depstrip(beads.m)
-      qc = depstrip(beads.qc)
+      q = dstrip(beads.q)
+      f = dstrip(forces.q)
+      m = dstrip(beads.m)
+      qc = dstrip(beads.qc)
 
       for j in range(nbeads+1):
          for i in range(natoms):
