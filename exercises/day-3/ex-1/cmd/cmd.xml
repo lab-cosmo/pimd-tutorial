@@ -19,7 +19,7 @@
         <frequencies style='pa-cmd' units="inversecm"> [13000]   </frequencies>
      </normal_modes>
      <initialize nbeads='48'>
-         <file mode='chk' > ../../pimd-checkpoints/h2o-ice-pimd.restart_xxx  </file>
+         <file mode='chk' > ../../checkpoint-pimd/h2o-ice-pimd.restart_xxx  </file>
          <velocities mode="thermal" units='kelvin'> 200 </velocities>
      </initialize>
      <forces>

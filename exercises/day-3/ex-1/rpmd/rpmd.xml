@@ -16,7 +16,7 @@
    </ffsocket>
    <system>
      <initialize nbeads='48'>
-         <file mode='chk' > ../../checkpoints-pimd/h2o-ice-pimd.restart_xxx  </file>
+         <file mode='chk' > ../../checkpoint-pimd/h2o-ice-pimd.restart_xxx  </file>
          <velocities mode="thermal" units='kelvin'> 200 </velocities>
      </initialize>
      <forces>
