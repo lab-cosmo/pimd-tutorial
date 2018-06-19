@@ -1,11 +1,11 @@
 <simulation>
    <output prefix='h2o-ice-rpmd'>
       <properties stride='100' filename='out'>  [ step, time{picosecond}, conserved, temperature{kelvin}, kinetic_cv, potential, pressure_cv{megapascal}] </properties>
-      <checkpoint filename='restart' stride='2000' />
-      <trajectory filename='xc' stride='200' format='xyz' cell_units='angstrom'> x_centroid{angstrom} </trajectory>
-      <trajectory filename='vc' stride='2' cell_units='angstrom'> v_centroid </trajectory>
-      <trajectory filename='for' stride='2000' format='xyz' cell_units='angstrom'> forces </trajectory>
-      <trajectory stride="2000" filename="pos" cell_units="angstrom">positions{angstrom}</trajectory>
+      <checkpoint filename='restart' stride='4000' />
+      <trajectory filename='xc' stride='400' format='xyz' cell_units='angstrom'> x_centroid{angstrom} </trajectory>
+      <trajectory filename='vc' stride='4' cell_units='angstrom'> v_centroid </trajectory>
+      <trajectory filename='for' stride='4000' format='xyz' cell_units='angstrom'> forces </trajectory>
+      <trajectory stride="4000" filename="pos" cell_units="angstrom">positions{angstrom}</trajectory>
    </output>
    <total_steps>20000</total_steps>
    <prng><seed>32xxx45</seed></prng>

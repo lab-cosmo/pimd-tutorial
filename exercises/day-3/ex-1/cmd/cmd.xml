@@ -1,11 +1,11 @@
 <simulation>
    <output prefix='h2o-ice-cmd'>
       <properties stride='1000' filename='out'>  [ step, time{picosecond}, conserved, temperature{kelvin}, kinetic_cv, potential, pressure_cv{megapascal}] </properties>
-      <checkpoint filename='restart' stride='20000' />
-      <trajectory filename='xc' stride='2000' format='xyz' cell_units='angstrom'> x_centroid{angstrom} </trajectory>
-      <trajectory filename='vc' stride='20' cell_units='angstrom'> v_centroid </trajectory>
-      <trajectory filename='for' stride='20000' format='xyz' cell_units='angstrom'> forces </trajectory>
-      <trajectory stride="20000" filename="pos" cell_units="angstrom">positions{angstrom}</trajectory>
+      <checkpoint filename='restart' stride='40000' />
+      <trajectory filename='xc' stride='4000' format='xyz' cell_units='angstrom'> x_centroid{angstrom} </trajectory>
+      <trajectory filename='vc' stride='40' cell_units='angstrom'> v_centroid </trajectory>
+      <trajectory filename='for' stride='40000' format='xyz' cell_units='angstrom'> forces </trajectory>
+      <trajectory stride="40000" filename="pos" cell_units="angstrom">positions{angstrom}</trajectory>
    </output>
    <total_steps>200000</total_steps>
    <prng><seed>32xxx45</seed></prng>
@@ -31,7 +31,7 @@
               <tau units='femtosecond'>1000</tau>
               <pile_lambda> 0.01 </pile_lambda>
            </thermostat>
-           <timestep units='femtosecond'> 0.02</timestep>
+           <timestep units='femtosecond'> 0.025</timestep>
          </dynamics>
       </motion>
      <ensemble>
