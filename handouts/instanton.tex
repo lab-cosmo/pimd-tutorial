@@ -1,0 +1,176 @@
+\documentclass{article}
+\input{./style.tex}
+\title{Computing instanton rates using \ipi{}}
+\author{Yair Litman, Wei Fang and Jeremy O.\ Richardson}
+\date{June 2018}
+
+\begin{document}
+
+\maketitle
+
+% INTRO
+In this exercises we will use \ipi{} not to run molecular dynamics
+but instead to optimize stationary points on the potential-energy surface.
+Then by simple extension, the ring-polymer instanton will be found
+which can be used to compute the thermal rate of a chemical reaction including tunnelling effects.
+
+The example which we will use is for the gas-phase bimolecular scattering reaction of H + CH$_4$.
+This requires multiple runs of \ipi{} for the different stationary points on the surface
+followed by one postprocessing calculation to combine all the data to compute the rate.
+
+Full details of the instanton approach are described in \cite{InstReview}.
+
+A typical work flow is summarized as follows:
+\begin{enumerate}
+	\item Optimize the minimum or minima and perform normal-mode analysis.
+	\item Optimize the transition state and perform normal-mode analysis.
+	\item Make an initial guess for an $N=16$ configuration.
+	\item Compute Hessians of each bead. (This can be done approximately.)
+	\item Optimize $N=16$ instanton using eigenvector following, computing gradients at each iteration, and using the Powell update formula on the ring-polymer Hessian.
+	\item Double number of beads by interpolation of positions and Hessians to give new guess configuration.
+	\item Optimize with Newton-Raphson, computing gradients at each iteration, and using the Powell update formula on the ring-polymer Hessian.
+		\label{opt}
+	\item Recompute Hessians for each bead.  (This must be done accurately.)
+	\item Evaluate the fluctuation terms and hence the rate, $k$.
+	\item Return to step \ref{opt} until the rate converges.
+\end{enumerate}
+
+If rates are required at more than one temperature,
+it is recommended to start with those closest to the crossover temperature and cool sequentially,
+again using initial guesses from the previous optimizations.
+
+\begin{Exercise}[label={reactant},title={Optimizing and analysing the reactant}]
+
+\Question
+Go to the folder \url{input/reactant/minimization}.
+A good initial guess has been provided in \url{init.xyz} and the input file \url{input.xml}.
+Then run \ipi{} using
+\begin{lstlisting}[language=bash]
+$ i-pi input.xml &
+\end{lstlisting}
+and the driver using
+\begin{lstlisting}[language=bash]
+$ i-pi-driver -m ch4hcbe -u
+\end{lstlisting}
+
+The simulation takes 31 steps and the final geometry can be seen in the last frame in \url{min.xc.xyz}.
+Note that as this is a bimolecular reaction, the H and the CH4 should be well separated and we have used a very large box size.
+We have used the CBE potential-energy surface \cite{Corchado2009HCH4}.
+
+\Question
+Next, go to the folder \url{input/reactant/phonons} and copy the optimized geometry just obtained (last 8 lines) into a new file called \url{init.xyz}.
+We will now compute the hessian of this minimum.
+Run
+\begin{lstlisting}[language=bash]
+$ i-pi input.xml &
+$ i-pi-driver -m ch4hcbe -u
+\end{lstlisting}
+
+The hessian is saved in \url{phonons.hess} and its eigenvalues in \url{phonons.eigval}.  Check that it has the required number (9) of almost zero eigenvalues.  Why?
+
+\end{Exercise}
+
+\begin{Exercise}[label={TS},title={Optimizing and analysing the transition state}]
+
+Go to \url{input/TS} and optimize the transition state using the usual run commands.
+The simulation takes 12 steps and puts the optimized geometry in \url{INSTANTON_FINAL_12.xyz}
+and its Hessian in \url{INSTANTON_FINAL.hess_12}.
+Visualize the geometry using vmd.
+
+\end{Exercise}
+
+\begin{Exercise}[label={inst1},title={First instanton optimization}]
+
+\Question
+Go to the folder \url{input/instanton/40}.
+Copy the optimized transition state geometry obtained in Ex.~\ref{TS} and name it \url{init.xyz}.
+Also copy the transition state hessian and name it \url{hessian.dat}.
+Run \ipi{} in the usual way, but here we can run 4 instances of driver simultaneously using:
+\begin{lstlisting}[language=bash]
+$ i-pi-driver -m ch4hcbe -u &
+$ i-pi-driver -m ch4hcbe -u &
+$ i-pi-driver -m ch4hcbe -u &
+$ i-pi-driver -m ch4hcbe -u &
+\end{lstlisting}
+
+The program first generates the initial instanton guess and then performs a optimization which takes 8 steps.
+The instanton geometry is saved in \url{INSTANTON_FINAL_7.xyz} and should be visualized with vmd.
+Finally hessians for each bead are also computed and saved in \url{INSTANTON_FINAL.hess_7}
+
+\end{Exercise}
+
+\begin{Exercise}[label={inst2},title={Second and subsequent instanton optimizations}]
+
+\Question
+Go to the folder \url{input/instanton/80}.
+\Question
+Copy the optimized transition state geometry obtained in Ex.~\ref{TS} and name it \url{init.xyz}.
+\Question
+Copy the optimized instanton geometry obtained in Ex.~\ref{inst1} and name it \url{init0}.
+\Question
+Copy the last hessian obtained in D and name it \url{hess0}.
+\Question
+Interpolate the instanton and the hessian to 80 beads by typing:
+\begin{lstlisting}[language=bash]
+$ python ${ipi-path}/tools/py/Instanton_interpolation.py -m -xyz init0 -hess hess0 -n 80
+\end{lstlisting}
+\Question
+Rename the new hessian and instanton geometry to hessian.dat and init.xyz respectively
+\Question
+Copy the 'input.xml' file from input/instanton/40
+\Question
+Change the number of beads from 40 to 80 (input.xml)
+\Question
+Change the hessian shape from (18,18) to (18,1440) (input.xml)
+
+Run as before.  The program performs a optimization which takes 2 steps and then computes a hessian.
+
+\end{Exercise}
+
+\begin{Exercise}[label={post},title={Postprocessing for the rate calculation}]
+
+\Question
+To compute the CH4 partition function, go the \url{input/reactant/phonons} folder and type
+\begin{lstlisting}[language=bash]
+$ python ${ipi-path}/tools/py/Instanton_postproc.py RESTART -c reactant -t 300 -n 80 -f 5
+\end{lstlisting}
+which computes the ring polymer parition function for CH4 with $N=80$.
+Look at the output and make a note of the translational, rotational and vibrational partition functions
+
+\Question
+To compute the TS partition function, go to \url{input/TS} and type
+\begin{lstlisting}[language=bash]
+$ python ${ipi-path}/tools/py/Instanton_postproc.py RESTART -c TS -t 300 -n 80
+\end{lstlisting}
+which computes the ring polymer parition function for the TS with $N=80$.
+%(check data.out file in the corresponding inside 'solution')
+
+\Question
+To compute the instanton partition function, $B_N$ and action,
+go to \url{input/instanton/80} and type
+\begin{lstlisting}[language=bash]
+$ python ${ipi-path}/tools/py/Instanton_postproc.py RESTART -c instanton -t 300
+\end{lstlisting}
+%(check data.out file in the corresponding inside 'solution')
+
+Then it is a simple matter to combine the partition functions, BN, S etc into the formula given for the rate.
+Compare the instanton results with those of the transition state in order to compute the tunnelling factor,
+\begin{align}
+	\kappa = \sqrt\frac{2\pi NB_N}{\beta \hbar^2}
+		f_\text{trans} f_\text{rot} f_\text{vib}
+		\mathrm{e}^{-S/\hbar+\beta V^\ddag}
+\end{align}
+where
+\begin{align}
+	f_\text{trans} &= \frac{Q_\text{trans}^\text{inst}}{Q_\text{trans}^\text{TS}} \\
+	f_\text{rot} &= \frac{Q_\text{rot}^\text{inst}}{Q_\text{rot}^\text{TS}} \\
+	f_\text{vib} &= \frac{Q_\text{vib}^\text{inst}}{Q_\text{vib}^\text{TS}}
+\end{align}
+In this way, you should find that the rate is about 9.8 times faster due to tunnelling.
+
+\end{Exercise}
+
+
+\bibliographystyle{unsrt}
+\bibliography{biblio}
+\end{document}
