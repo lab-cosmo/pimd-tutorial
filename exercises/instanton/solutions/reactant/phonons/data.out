@@ -11,15 +11,15 @@ We are using asr = poly
 
 Diagonalization....
 Final lowest 15 frequencies (cm^-1)
-[1382.980759 1383.070797 1383.092017 1550.08755  1550.182706 2991.885031
- 3164.166119 3164.238605 3164.447573]
+[ 1382.980759  1383.070797  1383.092017  1550.08755   1550.182706
+  2991.885031  3164.166119  3164.238605  3164.447573]
 
 We are done
-Nbeads 80
+Nbeads 160
 
 Qtras: 9.298069 bohr^-3
 Qrot: 438.760518
-logQvib_rp: -47.300121
+logQvib_rp: -47.336993
 A file with the frequencies in atomic units was generated
 
 

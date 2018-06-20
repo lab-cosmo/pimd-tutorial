@@ -143,21 +143,26 @@ So far, we have been working with half ring polymers, but for the rate calculati
 Therefore, the path with 80 beads, actually represents a ring polymer of 160 beads.
 This is a little confusing currently, and may be changed in the future, so check the help (using \url{-h}) to find out what is needed.
 
+Before starting this section, ensure that \url{\$PYTHONPATH} includes the \ipi{} directory
+and that the variable \url{ipi\_path} is correctly set in the postprocessing script \url{\$\{ipi-path\}/tools/py/Instanton\_postproc.py} where \url{\$\{ipi-path\}} is the location of \ipi{} directory.
+
 \Question
 To compute the CH4 partition function, go the \url{input/reactant/phonons} folder and type
 \begin{lstlisting}[language=bash]
-$ python ${ipi-path}/tools/py/Instanton_postproc.py RESTART -c reactant -t 300 -n 80 -f 5
+$ python ${ipi-path}/tools/py/Instanton_postproc.py RESTART -c reactant -t 300 -n 160 -f 5
 \end{lstlisting}
-which computes the ring polymer parition function for CH4 with $N=80$.
-Look at the output and make a note of the translational, rotational and vibrational partition functions
+which computes the ring polymer parition function for CH4 with $N=160$.
+Look at the output and make a note of the translational, rotational and vibrational partition functions.
+You may also want to put \url{> data.out} after the command to save the text directly to a file.
 
 \Question
 To compute the TS partition function, go to \url{input/TS} and type
 \begin{lstlisting}[language=bash]
-$ python ${ipi-path}/tools/py/Instanton_postproc.py RESTART -c TS -t 300 -n 80
+$ python ${ipi-path}/tools/py/Instanton_postproc.py RESTART -c TS -t 300 -n 160
 \end{lstlisting}
-which computes the ring polymer parition function for the TS with $N=80$.
+which computes the ring polymer parition function for the TS with $N=160$.
 %(check data.out file in the corresponding inside 'solution')
+Look for the value of the imaginary frequency and use this to compute the crossover temperature defined by $\beta_c = 2\pi/\omega_b$.  Be careful of units!  You should find that it is about 340 K.
 
 \Question
 To compute the instanton partition function, $B_N$ and action,
@@ -170,7 +175,7 @@ $ python ${ipi-path}/tools/py/Instanton_postproc.py RESTART -c instanton -t 300
 Then it is a simple matter to combine the partition functions, BN, S etc into the formula given for the rate.
 Compare the instanton results with those of the transition state in order to compute the tunnelling factor,
 \begin{align}
-	\kappa = \sqrt\frac{2\pi NB_N}{\beta \hbar^2}
+	\kappa = 
 		f_\text{trans} f_\text{rot} f_\text{vib}
 		\mathrm{e}^{-S/\hbar+\beta V^\ddag}
 \end{align}
@@ -178,9 +183,11 @@ where
 \begin{align}
 	f_\text{trans} &= \frac{Q_\text{trans}^\text{inst}}{Q_\text{trans}^\text{TS}} \\
 	f_\text{rot} &= \frac{Q_\text{rot}^\text{inst}}{Q_\text{rot}^\text{TS}} \\
-	f_\text{vib} &= \frac{Q_\text{vib}^\text{inst}}{Q_\text{vib}^\text{TS}}
+	f_\text{vib} &= \sqrt\frac{2\pi NB_N}{\beta \hbar^2} \frac{Q_\text{vib}^\text{inst}}{Q_\text{vib}^\text{TS}}
 \end{align}
+Note that it is the log of the vibrational partition function which is printed, so you will have to convert this. 
 In this way, you should find that the rate is about 9.8 times faster due to tunnelling.
+Which is the major contributing factor?
 
 \end{Exercise}
 
