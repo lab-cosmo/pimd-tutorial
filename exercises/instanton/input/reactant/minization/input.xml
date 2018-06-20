@@ -16,7 +16,7 @@
           <force forcefield="cbe"> </force>
        </forces>
        <motion mode="minimize">
-            <optimizer mode="sd">
+       <optimizer mode="sd"> <!-- optimization algorithm. Possible options: steepest descent(sd), conjugate gradient(cg), line search BFGS (bfgs), BFGS with trust radius method (bfgstrm) and lBFGS(lbfgs)-->
                 <tolerances>
                     <energy> 5e-5 </energy>
                     <force> 5e-5</force>

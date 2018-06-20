@@ -17,9 +17,9 @@
        </forces>
       <motion mode="vibrations">
         <vibrations mode="fd">
-            <pos_shift> 0.01  </pos_shift>
+            <pos_shift> 0.01  </pos_shift>  <!-- Displacment length -->
             <prefix> phonons </prefix>
-            <asr> none </asr>
+            <asr> none </asr>               <!-- Apply acoustic sume rule: none, crystal (translation) or poly(rotation and translation) -->
          </vibrations>
       </motion>
    </system>

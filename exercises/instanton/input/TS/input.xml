@@ -1,5 +1,5 @@
 <simulation mode="static" verbosity="medium">
-    <output prefix='inst'>
+    <output prefix='ts'>
        <trajectory filename='pos' stride='1' format='xyz' cell_units='angstrom'> positions{angstrom} </trajectory>
         <properties stride='1' filename='out'>  [ step, potential{electronvolt}] </properties>
    </output>
@@ -22,7 +22,7 @@
 	           <force> 5e-6 </force>
 	           <position> 1e-3 </position>
                </tolerances>
-               <alt_out>-1</alt_out>
+               <alt_out>-1</alt_out>         <!-- asdsad -->
                <hessian_update>powell</hessian_update>
                <hessian_asr>poly</hessian_asr>
                <hessian_init>true</hessian_init>
