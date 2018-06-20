@@ -44,6 +44,8 @@ again using initial guesses from the previous optimizations.
 \Question
 Go to the folder \url{input/reactant/minimization}.
 A good initial guess has been provided in \url{init.xyz} and the input file \url{input.xml}.
+Look at the input file which should be fairly self explanatory.  Note that the text between \url{<!--} and \url{-->} is a comment.
+
 Then run \ipi{} using
 \begin{lstlisting}[language=bash]
 $ i-pi input.xml &
@@ -54,6 +56,8 @@ $ i-pi-driver -m ch4hcbe -u
 \end{lstlisting}
 
 The simulation takes 31 steps and the final geometry can be seen in the last frame in \url{min.xc.xyz}.
+Once you finish this exercise, you could come back here and try to get the optimization to finish in fewer steps, e.g. by changing \url{sd} to one of the other optimizers.
+
 Note that as this is a bimolecular reaction, the H and the CH4 should be well separated and we have used a very large box size.
 We have used the CBE potential-energy surface \cite{Corchado2009HCH4}.
 
@@ -73,6 +77,7 @@ The hessian is saved in \url{phonons.hess} and its eigenvalues in \url{phonons.e
 \begin{Exercise}[label={TS},title={Optimizing and analysing the transition state}]
 
 Go to \url{input/TS} and optimize the transition state using the usual run commands.
+Here \ipi{} treats the TS search as a one-bead instanton optimization.
 The simulation takes 12 steps and puts the optimized geometry in \url{INSTANTON_FINAL_12.xyz}
 and its Hessian in \url{INSTANTON_FINAL.hess_12}.
 Visualize the geometry using vmd.
@@ -85,6 +90,7 @@ Visualize the geometry using vmd.
 Go to the folder \url{input/instanton/40}.
 Copy the optimized transition state geometry obtained in Ex.~\ref{TS} and name it \url{init.xyz}.
 Also copy the transition state hessian and name it \url{hessian.dat}.
+
 Run \ipi{} in the usual way, but here we can run 4 instances of driver simultaneously using:
 \begin{lstlisting}[language=bash]
 $ i-pi-driver -m ch4hcbe -u &
@@ -93,9 +99,13 @@ $ i-pi-driver -m ch4hcbe -u &
 $ i-pi-driver -m ch4hcbe -u &
 \end{lstlisting}
 
-The program first generates the initial instanton guess and then performs a optimization which takes 8 steps.
+The program first generates the initial instanton guess
+based on points spread around the TS in the direction of the imaginary mode.
+It then an optimization which takes 8 steps.
+
 The instanton geometry is saved in \url{INSTANTON_FINAL_7.xyz} and should be visualized with vmd.
 Finally hessians for each bead are also computed and saved in \url{INSTANTON_FINAL.hess_7}
+in the shape (3N,3Nn).
 
 \end{Exercise}
 
@@ -128,6 +138,10 @@ Run as before.  The program performs a optimization which takes 2 steps and then
 \end{Exercise}
 
 \begin{Exercise}[label={post},title={Postprocessing for the rate calculation}]
+
+So far, we have been working with half ring polymers, but for the rate calculation, one should consider full ring polymers.
+Therefore, the path with 80 beads, actually represents a ring polymer of 160 beads.
+This is a little confusing currently, and may be changed in the future, so check the help (using \url{-h}) to find out what is needed.
 
 \Question
 To compute the CH4 partition function, go the \url{input/reactant/phonons} folder and type
